@@ -8,8 +8,10 @@ app = FastAPI(
     version="1.0.0"
 )
 
+app_prefix = "/api/v1"
+
 # Record routes
-app.include_router(schema_router, prefix="/api", tags=["Schema"])
+app.include_router(schema_router, prefix=app_prefix, tags=["Schema"])
 
 
 @app.get("/")

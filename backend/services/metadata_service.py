@@ -1,33 +1,28 @@
 from sqlalchemy import inspect
-from database.connection import get_engine
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.engine import create_engine
+from sqlalchemy.engine.url import make_url
 
-def extract_metadata(connection_string: str):
-    engine = get_engine(connection_string)
-    inspector = inspect(engine)
+def test_connection_and_schema(connection_string: str):
+    try:
+        # Detect the motor
+        url = make_url(connection_string)
+        dialect = url.get_backend_name()
 
-    metadata = []
+        # Create engine and connect
+        engine = create_engine(connection_string)
+        inspector = inspect(engine)
+        tables = inspector.get_table_names()
 
-    for table_name in inspector.get_table_names():
-        columns = inspector.get_columns(table_name)
-        pk = inspector.get_pk_constraint(table_name).get("constrained_columns", [])
-        fks = inspector.get_foreign_keys(table_name)
+        return {
+            "status": "success",
+            "dialect": dialect,
+            "tables_count": len(tables),
+            "tables": tables
+        }
 
-        metadata.append({
-            "table": table_name,
-            "columns": [
-                {
-                    "name": col["name"],
-                    "type": str(col["type"]),
-                    "nullable": col["nullable"],
-                    "primary_key": col["name"] in pk
-                } for col in columns
-            ],
-            "foreign_keys": [
-                {
-                    "column": fk["constrained_columns"],
-                    "references": fk["referred_table"]
-                } for fk in fks
-            ]
-        })
-
-    return metadata
+    except SQLAlchemyError as e:
+        return {
+            "status": "error",
+            "detail": str(e.__cause__ or e)
+        }

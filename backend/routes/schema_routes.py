@@ -1,13 +1,12 @@
 from fastapi import APIRouter, HTTPException
 from schemas.schema_models import ConnectionData
-from services.metadata_service import extract_metadata
+from services.metadata_service import test_connection_and_schema
 
 router = APIRouter()
 
 @router.post("/connect")
-async def connect_to_db(data: ConnectionData):
+async def test_connection(data: ConnectionData):
     try:
-        metadata = extract_metadata(data.connection_string)
-        return metadata
+        return test_connection_and_schema(data.connection_string)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
