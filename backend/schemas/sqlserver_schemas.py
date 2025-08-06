@@ -1,7 +1,5 @@
 from pydantic import BaseModel
-
-class ConnectionData(BaseModel):
-    connection_string: str
+from typing import List
 
 class SQLServerConnectionData(BaseModel):
     username: str
@@ -9,3 +7,6 @@ class SQLServerConnectionData(BaseModel):
     host: str
     port: int = 1433
     database: str
+
+class SQLServerBatchInput(BaseModel):
+    connections: List[SQLServerConnectionData]

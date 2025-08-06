@@ -2,55 +2,81 @@ from sqlalchemy import inspect
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.engine import create_engine
 from sqlalchemy.engine.url import make_url
-from services.detect_driver_sql_server import detect_odbc_driver_sqlserver
+from concurrent.futures import ProcessPoolExecutor
+from typing import List, Dict, Any
 from urllib.parse import quote_plus
+from services.detect_driver_sql_server import detect_odbc_driver_sqlserver
 
-def test_connection_and_schema(connection_string: str):
+
+def get_metadata_by_connection(conn: Dict[str, Any]) -> Dict:
     try:
-        # Detect the motor
+        if conn["type"] == "postgresql":
+            return extract_full_metadata(conn["connection_string"])
+
+        elif conn["type"] == "sqlserver":
+            safe_password = quote_plus(conn["password"])
+            driver = detect_odbc_driver_sqlserver()
+            connection_string = (
+                f"mssql+pyodbc://{conn['username']}:{safe_password}@{conn['host']}:{conn['port']}/{conn['database']}"
+                f"?driver={driver}&TrustServerCertificate=yes"
+            )
+            return extract_full_metadata(connection_string)
+
+        else:
+            return {
+                "status": "error",
+                "detail": f"Tipo no soportado: {conn['type']}"
+            }
+
+    except Exception as e:
+        return {"status": "error", "detail": str(e)}
+
+def extract_metadata_batch(connections: List[Dict[str, Any]]) -> List[Dict]:
+    with ProcessPoolExecutor() as executor:
+        return list(executor.map(get_metadata_by_connection, connections))
+
+def extract_full_metadata(connection_string: str):
+    try:
         url = make_url(connection_string)
         dialect = url.get_backend_name()
 
-        # Create engine and connect
         engine = create_engine(connection_string)
         inspector = inspect(engine)
-        tables = inspector.get_table_names()
+
+        full_metadata = []
+
+        for table_name in inspector.get_table_names():
+            columns = inspector.get_columns(table_name)
+            pk = inspector.get_pk_constraint(table_name).get("constrained_columns", [])
+            fks = inspector.get_foreign_keys(table_name)
+
+            full_metadata.append({
+                "table": table_name,
+                "columns": [
+                    {
+                        "name": col["name"],
+                        "type": str(col["type"]),
+                        "nullable": col["nullable"],
+                        "primary_key": col["name"] in pk,
+                        "default": col.get("default", None)
+                    }
+                    for col in columns
+                ],
+                "foreign_keys": [
+                    {
+                        "column": fk["constrained_columns"],
+                        "references_table": fk["referred_table"],
+                        "references_column": fk["referred_columns"]
+                    }
+                    for fk in fks
+                ]
+            })
 
         return {
             "status": "success",
             "dialect": dialect,
-            "tables_count": len(tables),
-            "tables": tables
-        }
-
-    except SQLAlchemyError as e:
-        return {
-            "status": "error",
-            "detail": str(e.__cause__ or e)
-        }
-
-def test_sqlserver_connection(username: str, password: str, host: str, port: int, database: str):
-    try:
-        safe_password = quote_plus(password)
-        
-        # detect driver
-        odbc_driver = detect_odbc_driver_sqlserver()
-
-        connection_string = (
-            f"mssql+pyodbc://{username}:{safe_password}@{host}:{port}/{database}"
-            f"?driver={odbc_driver}&TrustServerCertificate=yes"
-        )
-
-        engine = create_engine(connection_string)
-        inspector = inspect(engine)
-        tables = inspector.get_table_names()
-
-        return {
-            "status": "success",
-            "dialect": "mssql",
-            "odbc_driver_used": odbc_driver.replace("+", " "),
-            "tables_count": len(tables),
-            "tables": tables
+            "tables_count": len(full_metadata),
+            "metadata": full_metadata
         }
 
     except SQLAlchemyError as e:
