@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from routes.postgresql.postgresql_routes import router as postgresql
-from routes.sqlserver.sqlserver_routes import router as sqlserver
+from routes.connection_sql import router as connection_router
+from database.sql import init_db
 
 # App instance
 app = FastAPI(
@@ -12,8 +12,7 @@ app = FastAPI(
 app_prefix = "/api/v1"
 
 # Record routes
-app.include_router(postgresql, prefix=app_prefix)
-app.include_router(sqlserver, prefix=app_prefix)
+app.include_router(connection_router, prefix=app_prefix)
 app.include_router
 
 @app.get("/")
@@ -25,3 +24,6 @@ async def read_root():
         "docs": "http://localhost:9999/docs",
         "openapi": "http://localhost:9999/redoc"
     }
+
+def main():
+    init_db()

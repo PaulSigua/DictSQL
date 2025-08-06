@@ -5,4 +5,5 @@ psycopg2-binary
 pymysql
 pyodbc
 cx_Oracle
-mysqlclient
+pymysql
+python-dotenv

@@ -10,10 +10,17 @@ from services.detect_driver_sql_server import detect_odbc_driver_sqlserver
 
 def get_metadata_by_connection(conn: Dict[str, Any]) -> Dict:
     try:
+        print(conn)
         if conn["type"] == "postgresql":
+            if "connection_string" not in conn:
+                return {"status": "error", "detail": "Falta 'connection_string' para PostgreSQL"}
             return extract_full_metadata(conn["connection_string"])
 
         elif conn["type"] == "sqlserver":
+            for field in ["username", "password", "host", "port", "database"]:
+                if field not in conn:
+                    return {"status": "error", "detail": f"Falta el campo '{field}' para SQL Server"}
+
             safe_password = quote_plus(conn["password"])
             driver = detect_odbc_driver_sqlserver()
             connection_string = (
@@ -84,3 +91,18 @@ def extract_full_metadata(connection_string: str):
             "status": "error",
             "detail": str(e.__cause__ or e)
         }
+
+
+def generate_connection_string(data: dict) -> str:
+    if data["type"] == "postgresql":
+        return f"postgresql://{data['username']}:{data['password']}@{data['host']}:{data['port']}/{data['database']}"
+
+    elif data["type"] == "sqlserver":
+        password = quote_plus(data["password"])
+        driver = detect_odbc_driver_sqlserver()
+        return (
+            f"mssql+pyodbc://{data['username']}:{password}@{data['host']}:{data['port']}/{data['database']}"
+            f"?driver={driver}&TrustServerCertificate=yes"
+        )
+
+    raise ValueError("Tipo de conexión no soportado")
