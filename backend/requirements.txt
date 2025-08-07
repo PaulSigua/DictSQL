@@ -7,3 +7,6 @@ pyodbc
 cx_Oracle
 pymysql
 python-dotenv
+passlib
+python-jose
+pydantic[email]

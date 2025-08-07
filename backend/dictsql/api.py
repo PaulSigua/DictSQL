@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from routes.connection_sql import router as connection_router
+from routes.auth import router as auth_router
 from database.sql import init_db
 
 # App instance
@@ -13,7 +14,7 @@ app_prefix = "/api/v1"
 
 # Record routes
 app.include_router(connection_router, prefix=app_prefix)
-app.include_router
+app.include_router(auth_router, prefix=app_prefix)
 
 @app.get("/")
 async def read_root():

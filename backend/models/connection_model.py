@@ -1,5 +1,5 @@
 from sqlalchemy import Column, String, Integer, Boolean
-from database.base import Base
+from database.sql import Base
 
 class ConnectionModel(Base):
     __tablename__ = "connections"
