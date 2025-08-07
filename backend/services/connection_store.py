@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from models.connection_model import ConnectionModel
 from database.sql import SessionLocal
 from typing import Optional, List
-from services.metadata_service import generate_connection_string
+from services.connection_utils import generate_connection_string
 import uuid
 
 

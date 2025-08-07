@@ -2,13 +2,13 @@ from fastapi import APIRouter, HTTPException
 from schemas.common import BaseConnectionInput, BatchConnectionInput 
 from typing import Optional, List
 from services.connection_store import store_connection_in_db, get_connection_from_db, update_connection_status, get_all_connections
-from services.metadata_service import get_metadata_by_connection, generate_connection_string
+from services.metadata_service import generate_connection_string, get_enriched_metadata
 from services.batch_connection import validate_connections
 from tests.test_connection_sql import test_connection_and_schema
 
 router = APIRouter(
     prefix="/connections",
-    tags=["Conexiones"]
+    tags=["Conexiones SQL (PostgreSQL, SQL Server, Oracle SQL, MySQL, etc)"]
 )
 
 @router.post("/connect")
@@ -29,15 +29,8 @@ async def connect_database(data: BaseConnectionInput):
         raise HTTPException(status_code=400, detail=str(e))
 
 @router.get("/metadata/{connection_id}")
-async def metadata(connection_id: str):
-    conn = get_connection_from_db(connection_id)
-    if not conn:
-        raise HTTPException(status_code=404, detail="Conexión no encontrada")
-
-    if not conn.get("is_active", True):
-        raise HTTPException(status_code=403, detail="La conexión está desactivada")
-
-    return get_metadata_by_connection(conn)
+def get_metadata(connection_id: str):
+    return get_enriched_metadata(connection_id)
 
 @router.post("/batch")
 async def validate_batch(data: BatchConnectionInput):

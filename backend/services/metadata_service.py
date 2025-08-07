@@ -6,11 +6,12 @@ from concurrent.futures import ProcessPoolExecutor
 from typing import List, Dict, Any
 from urllib.parse import quote_plus
 from services.detect_driver_sql_server import detect_odbc_driver_sqlserver
+from services.description_service import get_descriptions_by_connection
+from services.connection_store import get_connection_from_db
 
 
 def get_metadata_by_connection(conn: Dict[str, Any]) -> Dict:
     try:
-        print(conn)
         if conn["type"] == "postgresql":
             if "connection_string" not in conn:
                 return {"status": "error", "detail": "Falta 'connection_string' para PostgreSQL"}
@@ -106,3 +107,31 @@ def generate_connection_string(data: dict) -> str:
         )
 
     raise ValueError("Tipo de conexión no soportado")
+
+
+def get_enriched_metadata(connection_id: str) -> Dict:
+    conn = get_connection_from_db(connection_id)
+    if not conn or not conn.get("is_active", True):
+        raise Exception("Conexión no válida o inactiva")
+
+    raw_metadata = extract_full_metadata(conn["connection_string"])
+    if raw_metadata["status"] != "success":
+        return raw_metadata
+
+    docs = get_descriptions_by_connection(connection_id)
+
+    table_docs = {}
+    column_docs = {}
+    for doc in docs:
+        if doc["column_name"]:
+            column_docs.setdefault(doc["table_name"], {})[doc["column_name"]] = doc["description"]
+        else:
+            table_docs[doc["table_name"]] = doc["description"]
+
+    for table in raw_metadata["metadata"]:
+        table_name = table["table"]
+        table["description"] = table_docs.get(table_name)
+        for col in table["columns"]:
+            col["description"] = column_docs.get(table_name, {}).get(col["name"])
+
+    return raw_metadata
