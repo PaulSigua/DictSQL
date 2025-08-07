@@ -13,8 +13,8 @@ app = FastAPI(
 app_prefix = "/api/v1"
 
 # Record routes
-app.include_router(connection_router, prefix=app_prefix)
 app.include_router(auth_router, prefix=app_prefix)
+app.include_router(connection_router, prefix=app_prefix)
 
 @app.get("/")
 async def read_root():
