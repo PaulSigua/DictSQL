@@ -1,1 +1,113 @@
 /* You can add global styles to this file, and also import other style files */
+
+@import "tailwindcss";
+
+:root {
+  --color-background: #F9FAFB;
+  --color-surface: #FFFFFF;
+  --color-primary: #3B82F6;
+  --color-primary-hover: #2563EB;
+  --color-secondary: #E5E7EB;
+  --color-text: #111827;
+  --color-text-muted: #6B7280;
+  --color-accent-green: #22C55E;
+  --color-accent-purple: #8B5CF6;
+  --color-accent-orange: #F97316;
+  --color-accent-blue-light: #DBEAFE;
+  --color-border: #D1D5DB;
+}
+
+/* Background colors */
+.bg-custom-background {
+  background-color: var(--color-background);
+}
+.bg-custom-surface {
+  background-color: var(--color-surface);
+}
+.bg-primary {
+  background-color: var(--color-primary);
+}
+.bg-secondary {
+  background-color: var(--color-secondary);
+}
+.bg-accent-green {
+  background-color: var(--color-accent-green);
+}
+.bg-accent-purple {
+  background-color: var(--color-accent-purple);
+}
+.bg-accent-orange {
+  background-color: var(--color-accent-orange);
+}
+.bg-accent-blue-light {
+  background-color: var(--color-accent-blue-light);
+}
+
+/* Hover Backgrounds */
+.bg-primary-hover:hover {
+  background-color: var(--color-primary-hover);
+}
+.bg-secondary-hover:hover {
+  background-color: var(--color-secondary);
+}
+.bg-accent-green-hover:hover {
+  background-color: var(--color-accent-green);
+}
+.bg-accent-purple-hover:hover {
+  background-color: var(--color-accent-purple);
+}
+.bg-accent-orange-hover:hover {
+  background-color: var(--color-accent-orange);
+}
+.bg-accent-blue-light-hover:hover {
+  background-color: var(--color-accent-blue-light);
+}
+
+/* Text colors */
+.text-custom {
+  color: var(--color-text);
+}
+.text-muted {
+  color: var(--color-text-muted);
+}
+.text-primary {
+  color: var(--color-primary);
+}
+.text-secondary {
+  color: var(--color-secondary);
+}
+.text-accent-green {
+  color: var(--color-accent-green);
+}
+.text-accent-purple {
+  color: var(--color-accent-purple);
+}
+.text-accent-orange {
+  color: var(--color-accent-orange);
+}
+.text-accent-blue-light {
+  color: var(--color-accent-blue-light);
+}
+
+/* Borders */
+.border-custom {
+  border-color: var(--color-border);
+}
+.border-primary {
+  border-color: var(--color-primary);
+}
+.border-secondary {
+  border-color: var(--color-secondary);
+}
+.border-accent-green {
+  border-color: var(--color-accent-green);
+}
+.border-accent-purple {
+  border-color: var(--color-accent-purple);
+}
+.border-accent-orange {
+  border-color: var(--color-accent-orange);
+}
+.border-accent-blue-light {
+  border-color: var(--color-accent-blue-light);
+}
