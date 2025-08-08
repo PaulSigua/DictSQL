@@ -1,15 +1,42 @@
-<aside class="w-64 bg-custom-background border-r border-custom h-screen flex flex-col">
-
+<aside
+  class="w-70 bg-custom-background border-r border-custom h-screen flex flex-col"
+>
   <div class="p-4">
     <h1 class="text-lg font-semibold text-custom">DictSQL</h1>
-    <p class="text-sm text-muted">Database Documentation</p>
+    <p class="text-sm text-muted">Documentar Base de Datos</p>
   </div>
 
   <div class="flex p-2 gap-2 justify-center">
-    <button class="flex w-fit text-left p-1 text:center text-custom rounded hover:bg-gray-100 hover:cursor-pointer">New</button>
-    <button class="flex w-fit text-left p-1 text:center text-custom rounded hover:bg-gray-100 hover:cursor-pointer">Open</button>
-    <button class="flex w-fit text-left p-1 text:center text-custom rounded hover:bg-gray-100 hover:cursor-pointer">Save</button>
-    <button class="flex w-fit text-left p-1 text:center text-custom rounded hover:bg-gray-100 hover:cursor-pointer">Settings</button>
+    <button
+      class="flex items-center gap-1 text-custom rounded hover:bg-gray-100 hover:cursor-pointer p-0.5"
+    >
+      <lucide-icon name="Plus" class="w-4 h-4" />
+      <span> Nuevo </span>
+    </button>
+    <button
+      class="flex items-center gap-1 text-custom rounded hover:bg-gray-100 hover:cursor-pointer p-0.5"
+    >
+      <lucide-icon name="Folder" class="w-4 h-4" />
+      <span> Abrir </span>
+    </button>
+    <button
+      class="flex items-center gap-1 text-custom rounded hover:bg-gray-100 hover:cursor-pointer p-0.5"
+    >
+      <lucide-icon name="Save" class="w-4 h-4" />
+      <span> Guardar </span>
+    </button>
+    <button
+      class="flex items-center gap-1 text-custom rounded hover:bg-gray-100 hover:cursor-pointer p-0.5"
+    >
+      <lucide-icon name="Settings" class="w-4 h-4" />
+    </button>
   </div>
 
+  <div class="px-4 pb-2">
+    <input
+      type="text"
+      placeholder="Buscar"
+      class="w-full px-3 py-2 rounded border border-gray-300 text-custom focus:outline-none focus:ring focus:ring-blue-200"
+    />
+  </div>
 </aside>

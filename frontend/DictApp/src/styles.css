@@ -2,6 +2,42 @@
 
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Inter';
+  src: url('/assets/fonts/inter/inter-v19-latin-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/assets/fonts/inter/inter-v19-latin-500.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/assets/fonts/inter/inter-v19-latin-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/assets/fonts/inter/inter-v19-latin-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
 :root {
   --color-background: #F9FAFB;
   --color-surface: #FFFFFF;
@@ -15,6 +51,21 @@
   --color-accent-orange: #F97316;
   --color-accent-blue-light: #DBEAFE;
   --color-border: #D1D5DB;
+}
+
+body.dark {
+  --color-background: #1F2937;
+  --color-surface: #111827;
+  --color-primary: #3B82F6;
+  --color-primary-hover: #2563EB;
+  --color-secondary: #374151;
+  --color-text: #F3F4F6;
+  --color-text-muted: #9CA3AF;
+  --color-accent-green: #22C55E;
+  --color-accent-purple: #8B5CF6;
+  --color-accent-orange: #F97316;
+  --color-accent-blue-light: #1E3A8A;
+  --color-border: #4B5563;
 }
 
 /* Background colors */
