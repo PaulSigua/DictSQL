@@ -1,0 +1,19 @@
+{
+  "TITLE": "DictSQL",
+  "SUBTITLE": "Document your database",
+  "NEW": "New",
+  "OPEN": "Open",
+  "SAVE": "Save",
+  "GENERATE_DOC": "Generate documentation",
+  "database": {
+    "tables": "Tables",
+    "views": "Views",
+    "storedProcedures": "Stored Procedures",
+    "functions": "Functions",
+    "onlyActiveUsers": "Only active users",
+    "updatesUserData": "Updates user data",
+    "returnsFullName": "Returns full name",
+    "basicUserInfo": "Basic user info",
+    "userGeneratedPosts": "User-generated posts"
+  }
+}

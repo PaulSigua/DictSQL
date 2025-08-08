@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-sidenav',
@@ -16,38 +17,38 @@ export class SidenavComponent {
         name: 'public',
         categories: [
           {
-            name: 'Tables',
+            name: 'database.tables',
             icon: 'folder',
             count: 2,
             isOpen: true,
             items: [
-              { name: 'Users', description: 'Basic user info' },
-              { name: 'Posts', description: 'User-generated posts' },
+              { name: 'Users', description: 'database.basicUserInfo' },
+              { name: 'Posts', description: 'database.userGeneratedPosts' },
             ],
           },
           {
-            name: 'Views',
+            name: 'database.views',
             icon: 'folder',
             count: 1,
             isOpen: false,
-            items: [{ name: 'ActiveUsers', description: 'Only active users' }],
+            items: [{ name: 'ActiveUsers', description: 'database.onlyActiveUsers' }],
           },
           {
-            name: 'Stored Procedures',
+            name: 'database.storedProcedures',
             icon: 'folder',
             count: 1,
             isOpen: false,
             items: [
-              { name: 'sp_UpdateUser', description: 'Updates user data' },
+              { name: 'sp_UpdateUser', description: 'database.updatesUserData' },
             ],
           },
           {
-            name: 'Functions',
+            name: 'database.functions',
             icon: 'folder',
             count: 1,
             isOpen: false,
             items: [
-              { name: 'fn_GetUserName', description: 'Returns full name' },
+              { name: 'fn_GetUserName', description: 'database.returnsFullName' },
             ],
           },
         ],

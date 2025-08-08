@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ThemeService } from '../../core/services/theme.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-header',
@@ -8,9 +9,25 @@ import { ThemeService } from '../../core/services/theme.service';
   styleUrl: './header.component.css',
 })
 export class HeaderComponent {
-  constructor(private themeService: ThemeService) {}
+  language = 'en'; // Default language
+
+  constructor(
+    private themeService: ThemeService,
+    private translate: TranslateService
+  ) {}
+
+  ngOnInit(): void {
+    // sincronice the current language with the TranslateService
+    this.language = this.translate.currentLang || 'en';
+  }
 
   toggleDark() {
     this.themeService.toggleDarkMode();
+  }
+
+  switchLanguage(lang: string) {
+    this.language = lang;
+    this.translate.use(lang);
+    localStorage.setItem('lang', lang);
   }
 }

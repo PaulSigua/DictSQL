@@ -15,8 +15,11 @@ import {
   ChevronRight,
   ChevronDown,
   Database, 
-  Table
+  Table,
+  FileText
 } from 'lucide-angular';
+import { TranslateModule } from '@ngx-translate/core';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -28,7 +31,9 @@ import {
   imports: [
     CommonModule,
     RouterModule,
-    LucideAngularModule.pick({ Plus, Folder, Save, Settings, SunMoon, Search, ChevronRight, ChevronDown, Database, Table })
+    LucideAngularModule.pick({ Plus, Folder, Save, Settings, SunMoon, Search, ChevronRight, ChevronDown, Database, Table, FileText }),
+    TranslateModule,
+    FormsModule
   ],
   exports: [
     RouterModule,

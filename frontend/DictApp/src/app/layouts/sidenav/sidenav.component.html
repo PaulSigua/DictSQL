@@ -4,30 +4,30 @@
   <div>
     <div class="p-3">
       <h1 class="text-lg font-semibold text-custom">DictSQL</h1>
-      <p class="text-sm text-muted">Documentar Base de Datos</p>
+      <p class="text-sm text-muted">{{ "SUBTITLE" | translate }}</p>
     </div>
 
     <div class="flex p-0 gap-2 justify-center">
       <button
-        class="flex items-center gap-1 text-custom rounded hover:bg-gray-100 hover:cursor-pointer p-0.5 font-[500]"
+        class="flex items-center gap-1 text-custom rounded bg-label-hover hover:cursor-pointer p-1 font-[500]"
       >
         <lucide-icon name="Plus" class="w-4 h-4" />
-        <span> Nuevo </span>
+        <span> {{ "NEW" | translate }} </span>
       </button>
       <button
-        class="flex items-center gap-1 text-custom rounded hover:bg-gray-100 hover:cursor-pointer p-0.5 font-[500]"
+        class="flex items-center gap-1 text-custom rounded bg-label-hover hover:cursor-pointer p-1 font-[500]"
       >
         <lucide-icon name="Folder" class="w-4 h-4" />
-        <span> Abrir </span>
+        <span> {{ "OPEN" | translate }} </span>
       </button>
       <button
-        class="flex items-center gap-1 text-custom rounded hover:bg-gray-100 hover:cursor-pointer p-0.5 font-[500]"
+        class="flex items-center gap-1 text-custom rounded bg-label-hover hover:cursor-pointer p-1 font-[500]"
       >
         <lucide-icon name="Save" class="w-4 h-4" />
-        <span> Guardar </span>
+        <span> {{ "SAVE" | translate }} </span>
       </button>
       <button
-        class="flex items-center gap-1 text-custom rounded hover:bg-gray-100 hover:cursor-pointer p-0.5 font-[500]"
+        class="flex items-center gap-1 text-custom rounded bg-label-hover hover:cursor-pointer p-1 font-[500]"
       >
         <lucide-icon name="Settings" class="w-4 h-4" />
       </button>
@@ -53,15 +53,15 @@
     class="flex flex-col w-full h-full bg-custom-surface border-r border-custom pt-4 p-4"
   >
     <div class="text-sm text-custom">
-      <div class="flex items-center gap-1">
-        <lucide-icon name="Database" class="w-4 h-4" />
+      <div class="flex items-center gap-1.5">
+        <lucide-icon name="Database" class="w-4 h-4 text-blue-600" />
         <span class="font-semibold">{{ database.name }}</span>
       </div>
 
       <div class="ml-4 mt-2" *ngFor="let schema of database.schemas">
         <div class="flex items-center gap-1">
           <lucide-icon name="Folder" class="w-4 h-4 text-yellow-600" />
-          <span>{{ schema.name }}</span>
+          <span>{{ schema.name | translate }}</span>
         </div>
 
         <div class="ml-4" *ngFor="let category of schema.categories">
@@ -79,17 +79,18 @@
                 name="Folder"
                 class="w-4 h-4"
                 [ngClass]="{
-                  'text-blue-600': category.name === 'Tables',
-                  'text-green-600': category.name === 'Views',
-                  'text-purple-600': category.name === 'Stored Procedures',
-                  'text-orange-600': category.name === 'Functions'
+                  'text-blue-600': category.name === 'database.tables',
+                  'text-green-600': category.name === 'database.views',
+                  'text-purple-600':
+                    category.name === 'database.storedProcedures',
+                  'text-orange-600': category.name === 'database.functions'
                 }"
               />
-              <span class="font-medium">{{ category.name }}</span>
+              <span class="font-medium">{{ category.name | translate }}</span>
             </div>
-            <span class="text-xs bg-gray-200 text-gray-600 rounded-full px-2">{{
-              category.count
-            }}</span>
+            <span class="text-xs bg-gray-200 text-gray-600 rounded-full px-2">
+              {{ category.count }}
+            </span>
           </div>
 
           <div *ngIf="category.isOpen" class="ml-6">
@@ -101,7 +102,7 @@
               <div>
                 <div class="font-medium text-muted">{{ item.name }}</div>
                 <div class="text-xs text-muted truncate w-60">
-                  {{ item.description }}
+                  {{ item.description | translate }}
                 </div>
               </div>
             </div>

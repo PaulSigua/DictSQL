@@ -1,12 +1,38 @@
 <div
-  class="bg-custom-background border-r border-custom p-2 justify-end justify-center flex w-full"
+  class="bg-custom-background border-b border-custom p-3 justify-between items-center flex w-full gap-4"
 >
-  <div class="mb-2">
-    <button
-      (click)="toggleDark()"
-      class="flex justify-center text-custom hover:cursor-pointer"
+  <div class="flex gap-4 justify-center items-center">
+    <div>
+      <h1 class="text-custom font-semibold">DemoDB</h1>
+    </div>
+    <div>
+      <h2 class="text-custom bg-label p-1 rounded-lg">PostgreSQL</h2>
+    </div>
+  </div>
+
+  <div class="flex gap-2">
+    <div
+      class="flex w-full text-custom border border-custom bg-label-hover p-1 pl-2 pr-2 rounded-lg hover:cursor-pointer gap-1"
     >
-      <lucide-icon name="SunMoon" class="justify-center w-5 h-5" />
-    </button>
+      <lucide-icon name="FileText" class="w-5" />
+      <button class="flex hover:cursor-pointer">
+        {{ "GENERATE_DOC" | translate }}
+      </button>
+    </div>
+
+    <div class="flex p-1 border border-custom bg-label-hover rounded-lg">
+      <button (click)="toggleDark()" class="flex justify-center text-custom">
+        <lucide-icon name="SunMoon" class="justify-center w-5 h-5" />
+      </button>
+    </div>
+    <select
+      #languageSelect
+      name="language"
+      class="text-custom bg-transparent border border-custom rounded-lg p-1"
+      (change)="switchLanguage(languageSelect.value)"
+    >
+      <option value="es">🇪🇨 Español</option>
+      <option value="en">🇺🇸 English</option>
+    </select>
   </div>
 </div>
