@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: 'Inter';
-  src: url('/assets/fonts/inter/inter-v19-latin-regular.woff2') format('woff2');
+  src: url('assets/fonts/inter/inter-v19-latin-regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -12,7 +12,7 @@
 
 @font-face {
   font-family: 'Inter';
-  src: url('/assets/fonts/inter/inter-v19-latin-500.woff2') format('woff2');
+  src: url('assets/fonts/inter/inter-v19-latin-500.woff2') format('woff2');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -20,7 +20,7 @@
 
 @font-face {
   font-family: 'Inter';
-  src: url('/assets/fonts/inter/inter-v19-latin-600.woff2') format('woff2');
+  src: url('assets/fonts/inter/inter-v19-latin-600.woff2') format('woff2');
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -28,7 +28,7 @@
 
 @font-face {
   font-family: 'Inter';
-  src: url('/assets/fonts/inter/inter-v19-latin-700.woff2') format('woff2');
+  src: url('assets/fonts/inter/inter-v19-latin-700.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -44,18 +44,19 @@ body {
   --color-primary: #3B82F6;
   --color-primary-hover: #2563EB;
   --color-secondary: #E5E7EB;
-  --color-text: #111827;
+  --color-text: #0c1934;
   --color-text-muted: #6B7280;
   --color-accent-green: #22C55E;
   --color-accent-purple: #8B5CF6;
   --color-accent-orange: #F97316;
   --color-accent-blue-light: #DBEAFE;
   --color-border: #D1D5DB;
+  --color-background-label: #f2f2f2;
 }
 
 body.dark {
   --color-background: #1F2937;
-  --color-surface: #111827;
+  --color-surface: #273044;
   --color-primary: #3B82F6;
   --color-primary-hover: #2563EB;
   --color-secondary: #374151;
@@ -66,6 +67,7 @@ body.dark {
   --color-accent-orange: #F97316;
   --color-accent-blue-light: #1E3A8A;
   --color-border: #4B5563;
+  --color-background-label: #364153;
 }
 
 /* Background colors */
@@ -93,6 +95,9 @@ body.dark {
 .bg-accent-blue-light {
   background-color: var(--color-accent-blue-light);
 }
+.bg-label {
+  background-color: var(--color-background-label);
+}
 
 /* Hover Backgrounds */
 .bg-primary-hover:hover {
@@ -112,6 +117,9 @@ body.dark {
 }
 .bg-accent-blue-light-hover:hover {
   background-color: var(--color-accent-blue-light);
+}
+.bg-label-hover:hover {
+  background-color: var(--color-background-label);
 }
 
 /* Text colors */

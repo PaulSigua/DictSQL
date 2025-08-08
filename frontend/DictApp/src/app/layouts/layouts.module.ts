@@ -10,7 +10,12 @@ import {
   Folder,
   Save,
   Settings,
-  SunMoon
+  SunMoon,
+  Search,
+  ChevronRight,
+  ChevronDown,
+  Database, 
+  Table
 } from 'lucide-angular';
 
 
@@ -23,7 +28,7 @@ import {
   imports: [
     CommonModule,
     RouterModule,
-    LucideAngularModule.pick({ Plus, Folder, Save, Settings, SunMoon })
+    LucideAngularModule.pick({ Plus, Folder, Save, Settings, SunMoon, Search, ChevronRight, ChevronDown, Database, Table })
   ],
   exports: [
     RouterModule,
