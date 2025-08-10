@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { TabManagerService } from '../../services/tab/tab-manager.service';
 import { DbTab } from '../../models/db-tab.model';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-sidenav',
@@ -9,13 +11,24 @@ import { DbTab } from '../../models/db-tab.model';
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.css',
 })
-export class SidenavComponent {
+export class SidenavComponent implements OnInit {
+  showNewConnectionModal = false;
+  hasConnection$!: Observable<boolean>;
+
   constructor(
     private translate: TranslateService,
     private tabService: TabManagerService
   ) {}
 
-  showNewConnectionModal = false;
+  ngOnInit(): void {
+    this.hasConnection$ = this.tabService.tabs$.pipe(
+      map((tabs) => tabs.length > 0)
+    );
+  }
+
+  get hasConnectionSync(): boolean {
+    return !!this.tabService.getActiveTab();
+  }
 
   openNewConnection() {
     this.showNewConnectionModal = true;
@@ -36,7 +49,7 @@ export class SidenavComponent {
     this.tabService.openTab(tab);
     this.showNewConnectionModal = false;
   }
-  
+
   database = {
     name: 'DemoDB',
     schemas: [
