@@ -1,0 +1,69 @@
+
+<div class="fixed inset-0 z-40 bg-white/1 backdrop-blur-sm transition-opacity duration-300 ease-in-out" (click)="close.emit()"></div>
+
+<div class="fixed z-50 inset-0 flex items-center justify-center p-4" role="dialog" aria-modal="true">
+  <div class="w-full max-w-md rounded-lg border border-gray-400 bg-white dark:bg-gray-900 p-4">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="font-semibold text-">Nueva conexión</h3>
+      <button class="hover:text-custom" (click)="close.emit()">✕</button>
+    </div>
+
+    <form class="space-y-3" (ngSubmit)="submit()">
+      <div>
+        <label class="block text-sm mb-1">Nombre del proyecto</label>
+        <input class="w-full focus:outline-none border border-gray-400 rounded p-2 bg-white dark:bg-gray-900"
+               [(ngModel)]="model.projectName" name="projectName" required />
+      </div>
+
+      <div>
+        <label class="block text-sm mb-1">Tipo de base</label>
+        <select class="w-full border border-gray-400 rounded p-2 bg-white dark:bg-gray-900"
+                [(ngModel)]="model.type" name="type">
+          <option value="PostgreSQL">PostgreSQL</option>
+          <option value="SQLServer">SQL Server</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm mb-1">Host</label>
+          <input class="w-full focus:outline-none border border-gray-400 rounded p-2 bg-white dark:bg-gray-900"
+                 [(ngModel)]="model.host" name="host" />
+        </div>
+        <div>
+          <label class="block text-sm mb-1">Puerto</label>
+          <input type="number" class="w-full focus:outline-none border border-gray-400 rounded p-2 bg-white dark:bg-gray-900"
+                 [(ngModel)]="model.port" name="port" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm mb-1">Base de datos</label>
+          <input class="w-full focus:outline-none border border-gray-400 rounded p-2 bg-white dark:bg-gray-900"
+                 [(ngModel)]="model.database" name="database" required />
+        </div>
+        <div>
+          <label class="block text-sm mb-1">Usuario</label>
+          <input class="w-full focus:outline-none border border-gray-400 rounded p-2 bg-white dark:bg-gray-900"
+                 [(ngModel)]="model.user" name="user" />
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm mb-1">Contraseña</label>
+        <input type="password" class="w-full focus:outline-none border border-gray-400 rounded p-2 bg-white dark:bg-gray-900"
+               [(ngModel)]="model.password" name="password" />
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2">
+        <button type="button" class="px-3 py-2 rounded bg-label text-custom cursor-pointer" (click)="close.emit()">
+          Cancelar
+        </button>
+        <button type="submit" class="px-3 py-2 rounded bg-blue-500 text-white hover:bg-blue-600 cursor-pointer">
+          Crear pestaña
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

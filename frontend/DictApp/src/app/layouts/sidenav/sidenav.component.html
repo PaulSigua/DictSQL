@@ -1,45 +1,33 @@
-<aside
-  class="w-80 bg-custom-background border-r border-custom h-screen flex flex-col"
->
+<aside class="w-80 bg-custom-background border-r border-custom h-screen flex flex-col">
   <div>
     <div class="p-3">
       <h1 class="text-lg font-semibold text-custom">DictSQL</h1>
-      <p class="text-sm text-muted">{{ "SUBTITLE" | translate }}</p>
+      <p class="text-sm text-muted">{{ 'SUBTITLE' | translate }}</p>
     </div>
 
     <div class="flex p-0 gap-2 justify-center">
       <button
         class="flex items-center gap-1 text-custom rounded bg-label-hover hover:cursor-pointer p-1 font-[500]"
+        (click)="openNewConnection()"
       >
         <lucide-icon name="Plus" class="w-4 h-4" />
-        <span> {{ "NEW" | translate }} </span>
+        <span>{{ 'NEW' | translate }}</span>
       </button>
-      <button
-        class="flex items-center gap-1 text-custom rounded bg-label-hover hover:cursor-pointer p-1 font-[500]"
-      >
+      <button class="flex items-center gap-1 text-custom rounded bg-label-hover hover:cursor-pointer p-1 font-[500]">
         <lucide-icon name="Folder" class="w-4 h-4" />
-        <span> {{ "OPEN" | translate }} </span>
+        <span>{{ 'OPEN' | translate }}</span>
       </button>
-      <button
-        class="flex items-center gap-1 text-custom rounded bg-label-hover hover:cursor-pointer p-1 font-[500]"
-      >
+      <button class="flex items-center gap-1 text-custom rounded bg-label-hover hover:cursor-pointer p-1 font-[500]">
         <lucide-icon name="Save" class="w-4 h-4" />
-        <span> {{ "SAVE" | translate }} </span>
+        <span>{{ 'SAVE' | translate }}</span>
       </button>
-      <button
-        class="flex items-center gap-1 text-custom rounded bg-label-hover hover:cursor-pointer p-1 font-[500]"
-      >
+      <button class="flex items-center gap-1 text-custom rounded bg-label-hover hover:cursor-pointer p-1 font-[500]">
         <lucide-icon name="Settings" class="w-4 h-4" />
       </button>
     </div>
 
-    <div
-      class="flex items-center gap-3 m-4 p-2 rounded border border-gray-300 bg-white dark:bg-gray-900"
-    >
-      <lucide-icon
-        name="Search"
-        class="w-4 h-4 text-gray-500 dark:text-gray-400"
-      />
+    <div class="flex items-center gap-3 m-4 p-2 rounded border border-gray-300 bg-white dark:bg-gray-900">
+      <lucide-icon name="Search" class="w-4 h-4 text-gray-500 dark:text-gray-400" />
       <input
         type="text"
         placeholder="Buscar tablas, columnas..."
@@ -49,9 +37,7 @@
     </div>
   </div>
 
-  <div
-    class="flex flex-col w-full h-full bg-custom-surface border-r border-custom pt-4 p-4"
-  >
+  <div class="flex flex-col w-full h-full bg-custom-surface border-r border-custom pt-4 p-4">
     <div class="text-sm text-custom">
       <div class="flex items-center gap-1.5">
         <lucide-icon name="Database" class="w-4 h-4 text-blue-600" />
@@ -70,40 +56,27 @@
             (click)="category.isOpen = !category.isOpen"
           >
             <div class="flex items-center gap-2">
-              <lucide-icon
-                name="ChevronRight"
-                [ngClass]="{ 'rotate-90': category.isOpen }"
-                class="w-4 h-4 transition-transform"
-              />
-              <lucide-icon
-                name="Folder"
-                class="w-4 h-4"
+              <lucide-icon name="ChevronRight"
+                           [ngClass]="{ 'rotate-90': category.isOpen }"
+                           class="w-4 h-4 transition-transform" />
+              <lucide-icon name="Folder" class="w-4 h-4"
                 [ngClass]="{
                   'text-blue-600': category.name === 'database.tables',
                   'text-green-600': category.name === 'database.views',
-                  'text-purple-600':
-                    category.name === 'database.storedProcedures',
+                  'text-purple-600': category.name === 'database.storedProcedures',
                   'text-orange-600': category.name === 'database.functions'
-                }"
-              />
+                }" />
               <span class="font-medium">{{ category.name | translate }}</span>
             </div>
-            <span class="text-xs bg-gray-200 text-gray-600 rounded-full px-2">
-              {{ category.count }}
-            </span>
+            <span class="text-xs bg-gray-200 text-gray-600 rounded-full px-2">{{ category.count }}</span>
           </div>
 
           <div *ngIf="category.isOpen" class="ml-6">
-            <div
-              *ngFor="let item of category.items"
-              class="flex items-start gap-2 py-1 px-2 rounded bg-label-hover cursor-pointer"
-            >
+            <div *ngFor="let item of category.items" class="flex items-start gap-2 py-1 px-2 rounded bg-label-hover cursor-pointer">
               <lucide-icon name="Table" class="w-4 h-4 text-blue-600 mt-1" />
               <div>
                 <div class="font-medium text-muted">{{ item.name }}</div>
-                <div class="text-xs text-muted truncate w-60">
-                  {{ item.description | translate }}
-                </div>
+                <div class="text-xs text-muted truncate w-60">{{ item.description | translate }}</div>
               </div>
             </div>
           </div>
@@ -111,4 +84,11 @@
       </div>
     </div>
   </div>
+
+  <!-- MODAL -->
+  <app-new-connection-modal
+    *ngIf="showNewConnectionModal"
+    (close)="showNewConnectionModal = false"
+    (create)="createTab($event)"
+  ></app-new-connection-modal>
 </aside>

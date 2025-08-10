@@ -16,10 +16,12 @@ import {
   ChevronDown,
   Database, 
   Table,
-  FileText
+  FileText,
+  PlugZap
 } from 'lucide-angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
+import { PagesModule } from '../pages/pages.module';
 
 
 @NgModule({
@@ -31,9 +33,10 @@ import { FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     RouterModule,
-    LucideAngularModule.pick({ Plus, Folder, Save, Settings, SunMoon, Search, ChevronRight, ChevronDown, Database, Table, FileText }),
+    LucideAngularModule.pick({ Plus, Folder, Save, Settings, SunMoon, Search, ChevronRight, ChevronDown, Database, Table, FileText, PlugZap }),
     TranslateModule,
-    FormsModule
+    FormsModule,
+    PagesModule
   ],
   exports: [
     RouterModule,

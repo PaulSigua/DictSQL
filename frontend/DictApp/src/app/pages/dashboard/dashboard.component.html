@@ -1,0 +1,20 @@
+<div class="tabs">
+  <div class="tab-list">
+    <div
+      class="tab"
+      *ngFor="let tab of tabs$ | async"
+      [class.active]="tab.active"
+    >
+      <span (click)="activate(tab.id)">
+        {{ tab.title }}
+      </span>
+      <button (click)="close(tab.id)">×</button>
+    </div>
+  </div>
+
+  <div class="tab-content">
+    <ng-container *ngFor="let tab of tabs$ | async">
+      <app-db-tab *ngIf="tab.active" [tab]="tab"></app-db-tab>
+    </ng-container>
+  </div>
+</div>
