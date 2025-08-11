@@ -1,4 +1,7 @@
-<div class="db-tab">
-  <h3>{{ tab.title }} ({{ tab.connectionType }})</h3>
-  <pre>{{ tab.connectionData | json }}</pre>
+<div
+  class="db-tab text-custom p-4 border border-t-0 rounded-b-lg shadow-sm
+         border-[var(--color-border)] bg-custom-surface"
+>
+  <h3 class="font-semibold mb-2">{{ tab.title }} ({{ tab.connectionType }})</h3>
+  <pre class="text-sm text-muted">{{ tab.connectionData | json }}</pre>
 </div>

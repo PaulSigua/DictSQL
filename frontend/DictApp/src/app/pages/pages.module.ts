@@ -5,7 +5,10 @@ import { RouterModule } from '@angular/router';
 import { DbTabComponent } from './db-tab/db-tab.component';
 import { NewConnectionModalComponent } from './new-connection-modal/new-connection-modal.component';
 import { FormsModule } from '@angular/forms';
-
+import {
+  Database,
+  LucideAngularModule
+} from 'lucide-angular';
 
 
 @NgModule({
@@ -17,7 +20,8 @@ import { FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     RouterModule,
-    FormsModule
+    FormsModule,
+    LucideAngularModule.pick({Database})
   ],
   exports: [
     RouterModule,

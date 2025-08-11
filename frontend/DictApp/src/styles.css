@@ -41,7 +41,7 @@ body {
 :root {
   --color-background: #F9FAFB;
   --color-surface: #FFFFFF;
-  --color-primary: #3B82F6;
+  --color-primary: #226de4;
   --color-primary-hover: #2563EB;
   --color-secondary: #E5E7EB;
   --color-text: #0c1934;
@@ -52,6 +52,8 @@ body {
   --color-accent-blue-light: #DBEAFE;
   --color-border: #D1D5DB;
   --color-background-label: #f2f2f2;
+  --tab-border: var(--color-border);
+  --tab-border-active: var(--color-primary);
 }
 
 body.dark {
@@ -68,6 +70,8 @@ body.dark {
   --color-accent-blue-light: #1E3A8A;
   --color-border: #4B5563;
   --color-background-label: #364153;
+  --tab-border: var(--color-border);
+  --tab-border-active: var(--color-primary);
 }
 
 /* Background colors */
@@ -169,4 +173,44 @@ body.dark {
 }
 .border-accent-blue-light {
   border-color: var(--color-accent-blue-light);
+}
+
+/* style scoll */
+.custom-scroll {
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+
+  /* Safari and navigators WebKit */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* WebKit (Chrome, Edge, Safari) */
+.custom-scroll::-webkit-scrollbar {
+  height: 4px;
+  width: 4px;
+  transition: all 0.2s ease;
+}
+
+.custom-scroll:hover::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--color-border);
+  border-radius: 4px;
+}
+
+.custom-scroll:hover::-webkit-scrollbar-thumb {
+  background-color: var(--color-secondary);
+}
+
+/* Firefox hover */
+.custom-scroll:hover {
+  scrollbar-color: var(--color-border) transparent;
 }
