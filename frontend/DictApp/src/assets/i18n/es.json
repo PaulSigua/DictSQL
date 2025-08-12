@@ -5,7 +5,9 @@
   "OPEN": "Abrir",
   "SAVE": "Guardar",
   "GENERATE_DOC": "Generar documentación",
-  "database": {
+  "SIDENAV": {
+    "connection-offline": "Aún no has creado ninguna conexión.",
+    "connection-create": "Crear una conexión",
     "tables": "Tablas",
     "views": "Vistas",
     "storedProcedures": "Procedimientos Almacenados",
@@ -15,5 +17,10 @@
     "returnsFullName": "Retorna el nombre completo",
     "basicUserInfo": "Información básica del usuario",
     "userGeneratedPosts": "Publicaciones generadas por usuarios"
+  },
+  "DASHBOARD": {
+    "NO_CONNECTIONS_TITLE": "No hay conexiones aún",
+    "NO_CONNECTIONS_DESC": "Crea tu primera conexión para comenzar a documentar.",
+    "CREATE_FIRST": "Crear una conexión"
   }
 }

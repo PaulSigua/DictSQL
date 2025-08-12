@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-new-connection-modal',
@@ -16,7 +16,7 @@ export class NewConnectionModalComponent {
 
   model = {
     projectName: '',
-    type: 'PostgreSQL' as 'PostgreSQL' | 'SQLServer' | string,
+    type: 'PostgreSQL' as const,
     host: 'localhost',
     port: 5432,
     database: '',
@@ -24,8 +24,12 @@ export class NewConnectionModalComponent {
     password: '',
   };
 
+  @HostListener('document:keydown.escape')
+  onEsc() { this.close.emit(); }
+
   submit() {
-    if (!this.model.projectName || !this.model.database) return;
+    if (!this.model.projectName?.trim() || !this.model.database?.trim()) return;
+
     this.create.emit({
       projectName: this.model.projectName.trim(),
       type: this.model.type,
@@ -37,5 +41,7 @@ export class NewConnectionModalComponent {
         password: this.model.password,
       },
     });
+
+    this.close.emit();
   }
 }

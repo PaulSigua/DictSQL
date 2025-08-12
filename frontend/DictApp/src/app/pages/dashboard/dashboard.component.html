@@ -1,32 +1,83 @@
-<div class="tabs bg-custom-surface p-2">
-  <div class="w-full overflow-x-auto custom-scroll">
-  <div class="inline-flex gap-2 whitespace-nowrap">
-      <div
-        *ngFor="let tab of tabs$ | async"
-        (click)="activate(tab.id)"
-        class="shrink-0 px-4 py-2 cursor-pointer inline-flex items-center gap-2
-               select-none rounded-t-lg border text-custom
-               border-[var(--tab-border)]"
-        [ngClass]="tab.active
-          ? 'border-[var(--tab-border-active)] bg-custom-surface'
-          : 'hover:bg-[var(--color-background-label)]'"
-      >
-        <div class="flex items-center gap-1.5">
-          <lucide-icon name="Database" class="w-4 h-4 text-blue-600" />
-          <span class="font-semibold truncate max-w-[12rem]">{{ tab.title }}</span>
+<div class="min-h-full flex flex-col">
+  <div *ngIf="hasTabs$ | async" class="sticky top-0 z-10 bg-custom-surface border-b border-[var(--color-border)]">
+    <div class="px-3 py-2">
+      <div class="w-full overflow-x-auto custom-scroll">
+        <div class="inline-flex gap-2 whitespace-nowrap">
+          <div
+            *ngFor="let tab of tabs$ | async; trackBy: trackTab"
+            (click)="activate(tab.id)"
+            class="shrink-0 px-4 py-2 cursor-pointer inline-flex items-center gap-2
+                   select-none rounded-t-lg border text-custom
+                   border-[var(--tab-border)] transition-colors"
+            [ngClass]="tab.active
+              ? 'border-[var(--tab-border-active)] bg-custom-surface'
+              : 'bg-custom-background hover:bg-[var(--color-background-label)]'"
+          >
+            <div class="flex items-center gap-1.5">
+              <lucide-icon name="Database" class="w-4 h-4 text-blue-600"></lucide-icon>
+              <span class="font-semibold truncate max-w-[12rem]">{{ tab.title }}</span>
+            </div>
+            <button
+              class="ml-1 px-2 leading-none rounded hover:bg-[var(--color-background-label)]"
+              (click)="close(tab.id); $event.stopPropagation()"
+              aria-label="Cerrar"
+            >×</button>
+          </div>
         </div>
-        <button
-          class="ml-1 px-2 leading-none rounded hover:bg-[var(--color-background-label)]"
-          (click)="close(tab.id); $event.stopPropagation()"
-          aria-label="Cerrar"
-        >×</button>
       </div>
     </div>
   </div>
 
-  <div class="tab-content mt-2 border-[var(--color-border)] border-">
-    <ng-container *ngFor="let tab of tabs$ | async">
-      <app-db-tab *ngIf="tab.active" [tab]="tab"></app-db-tab>
-    </ng-container>
+  <div *ngIf="hasTabs$ | async; else emptyState" class="flex-1 min-h-0 overflow-auto p-3">
+    <div class="rounded-b-lg border border-t-0 border-[var(--color-border)] bg-custom-surface shadow-sm">
+
+      <ng-container *ngIf="activeTab$ | async as activeTab">
+        <app-db-tab [tab]="activeTab"></app-db-tab>
+
+        <div class="flex flex-wrap gap-2 mb-4 bg-custom-background p-2 rounded-t-lg">
+          <a
+            routerLink="documentation"
+            routerLinkActive="bg-custom-background border-custom text-custom shadow-sm"
+            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg"
+          >
+            <lucide-icon name="FileText" class="w-4 h-4"></lucide-icon>
+            <span>Documentation</span>
+          </a>
+
+          <a
+            routerLink="object-details"
+            routerLinkActive="bg-custom-background border-custom text-custom shadow-sm"
+            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg"
+          >
+            <lucide-icon name="Info" class="w-4 h-4"></lucide-icon>
+            <span>Object Details</span>
+          </a>
+        </div>
+      </ng-container>
+
+      <div class="p-4 bg-custom-background h-full overflow-auto">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
   </div>
+
+  <ng-template #emptyState>
+    <div class="flex-1 min-h-0 overflow-auto p-8">
+      <div class="mx-auto max-w-lg text-center text-muted">
+        <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[var(--color-accent-blue-light)] mb-3">
+          <lucide-icon name="PlugZap" class="w-6 h-6 text-blue-600"></lucide-icon>
+        </div>
+        <h3 class="text-custom font-semibold mb-1">
+          {{ 'DASHBOARD.NO_CONNECTIONS_TITLE' | translate : { default: 'No connections yet' } }}
+        </h3>
+        <p class="mb-4">
+          {{ 'DASHBOARD.NO_CONNECTIONS_DESC' | translate : { default: 'Create your first connection to start documenting.' } }}
+        </p>
+        <button class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+                (click)="openSidenavNewConnection()">
+          {{ 'DASHBOARD.CREATE_FIRST' | translate : { default: 'Create a connection' } }}
+        </button>
+      </div>
+    </div>
+  </ng-template>
 </div>

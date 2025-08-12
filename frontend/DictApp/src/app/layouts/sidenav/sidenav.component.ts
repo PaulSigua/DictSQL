@@ -26,10 +26,6 @@ export class SidenavComponent implements OnInit {
     );
   }
 
-  get hasConnectionSync(): boolean {
-    return !!this.tabService.getActiveTab();
-  }
-
   openNewConnection() {
     this.showNewConnectionModal = true;
   }
@@ -56,17 +52,17 @@ export class SidenavComponent implements OnInit {
       {
         name: 'public',
         categories: [
-          { name: 'database.tables', count: 2, isOpen: true, items: [
+          { name: 'SIDENAV.tables', count: 2, isOpen: true, items: [
             { name: 'Users', description: 'user.table.desc' },
             { name: 'Posts', description: 'posts.table.desc' },
           ]},
-          { name: 'database.views', count: 1, isOpen: false, items: [
+          { name: 'SIDENAV.views', count: 1, isOpen: false, items: [
             { name: 'ActiveUsers', description: 'view.activeUsers.desc' },
           ]},
-          { name: 'database.storedProcedures', count: 1, isOpen: false, items: [
+          { name: 'SIDENAV.storedProcedures', count: 1, isOpen: false, items: [
             { name: 'sp_UpdateUser', description: 'sp.updateUser.desc' },
           ]},
-          { name: 'database.functions', count: 1, isOpen: false, items: [
+          { name: 'SIDENAV.functions', count: 1, isOpen: false, items: [
             { name: 'fn_GetUserName', description: 'fn.getUserName.desc' },
           ]},
         ],

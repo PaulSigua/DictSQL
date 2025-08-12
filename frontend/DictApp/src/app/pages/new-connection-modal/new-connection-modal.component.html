@@ -1,11 +1,12 @@
 
-<div class="fixed inset-0 z-40 bg-white/1 backdrop-blur-sm transition-opacity duration-300 ease-in-out" (click)="close.emit()"></div>
+<div class="fixed inset-0 z-40 bg-black/40 backdrop-blur-[1px]" (click)="close.emit()"></div>
 
 <div class="fixed z-50 inset-0 flex items-center justify-center p-4" role="dialog" aria-modal="true">
-  <div class="w-full max-w-md rounded-lg border border-gray-400 bg-white dark:bg-gray-900 p-4">
+  <div class="w-full max-w-md rounded-lg border border-gray-400 bg-white dark:bg-gray-900 p-4"
+       (click)="$event.stopPropagation()">
     <div class="flex items-center justify-between mb-3">
-      <h3 class="font-semibold text-">Nueva conexión</h3>
-      <button class="hover:text-custom" (click)="close.emit()">✕</button>
+      <h3 class="font-semibold">Nueva conexión</h3>
+      <button class="hover:text-custom" type="button" (click)="close.emit()">✕</button>
     </div>
 
     <form class="space-y-3" (ngSubmit)="submit()">

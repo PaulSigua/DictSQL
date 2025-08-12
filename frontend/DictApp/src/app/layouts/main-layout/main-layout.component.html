@@ -1,10 +1,10 @@
-<div class="flex h-screen">
-  <app-sidenav class="w-80"></app-sidenav>
+<div class="h-screen overflow-hidden grid grid-cols-[20rem_1fr]">
+  <app-sidenav class="h-full border-r border-[var(--color-border)]"></app-sidenav>
 
-  <div class="flex-1 flex flex-col min-w-0">
-    <app-header class="h-16"></app-header>
+  <div class="min-h-0 flex flex-col">
+    <app-header class="h-16 shrink-0 border-b border-[var(--color-border)] bg-custom-surface"></app-header>
 
-    <main class="flex-1 overflow-y-auto overflow-x-hidden min-w-0">
+    <main class="flex-1 min-h-0 overflow-auto bg-custom-background">
       <router-outlet></router-outlet>
     </main>
   </div>

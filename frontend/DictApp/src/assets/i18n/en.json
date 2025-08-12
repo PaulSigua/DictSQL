@@ -5,7 +5,9 @@
   "OPEN": "Open",
   "SAVE": "Save",
   "GENERATE_DOC": "Generate documentation",
-  "database": {
+  "SIDENAV": {
+    "connection-offline": "You haven't created any connections yet.",
+    "connection-create": "Create a connection",
     "tables": "Tables",
     "views": "Views",
     "storedProcedures": "Stored Procedures",
@@ -15,5 +17,10 @@
     "returnsFullName": "Returns full name",
     "basicUserInfo": "Basic user info",
     "userGeneratedPosts": "User-generated posts"
+  },
+  "DASHBOARD": {
+    "NO_CONNECTIONS_TITLE": "No connections yet",
+    "NO_CONNECTIONS_DESC": "Create your first connection to start documenting.",
+    "CREATE_FIRST": "Create a connection"
   }
 }

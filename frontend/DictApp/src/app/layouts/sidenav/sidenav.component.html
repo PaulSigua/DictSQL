@@ -37,7 +37,7 @@
     </div>
   </div>
 
-  <ng-container *ngIf="(hasConnection$ | async) && hasConnectionSync; else emptyState">
+  <ng-container *ngIf="(hasConnection$ | async); else emptyState">
     <div class="flex flex-col w-full h-full bg-custom-surface border-r border-custom pt-4 p-4">
       <div class="text-sm text-custom">
         <div class="flex items-center gap-1.5">
@@ -66,10 +66,10 @@
                   name="Folder"
                   class="w-4 h-4"
                   [ngClass]="{
-                    'text-blue-600': category.name === 'database.tables',
-                    'text-green-600': category.name === 'database.views',
-                    'text-purple-600': category.name === 'database.storedProcedures',
-                    'text-orange-600': category.name === 'database.functions'
+                    'text-blue-600': category.name === 'SIDENAV.tables',
+                    'text-green-600': category.name === 'SIDENAV.views',
+                    'text-purple-600': category.name === 'SIDENAV.storedProcedures',
+                    'text-orange-600': category.name === 'SIDENAV.functions'
                   }"
                 />
                 <span class="font-medium">{{ category.name | translate }}</span>
@@ -106,13 +106,13 @@
           <lucide-icon name="PlugZap" class="w-6 h-6 text-blue-600 inline-block" />
         </div>
         <p class="text-sm text-muted mb-3">
-          Aún no has creado ninguna conexión.
+          {{ 'SIDENAV.connection-offline' | translate }}
         </p>
         <button
           class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm"
           (click)="openNewConnection()"
         >
-          Crear nueva conexión
+          {{ 'SIDENAV.connection-create' | translate }}
         </button>
       </div>
     </div>

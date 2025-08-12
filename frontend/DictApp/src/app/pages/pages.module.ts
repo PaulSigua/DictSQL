@@ -7,21 +7,28 @@ import { NewConnectionModalComponent } from './new-connection-modal/new-connecti
 import { FormsModule } from '@angular/forms';
 import {
   Database,
-  LucideAngularModule
+  LucideAngularModule,
+  Info
 } from 'lucide-angular';
+import { DocumentationComponent } from './dashboard/documentation/documentation.component';
+import { ObjectDetailsComponent } from './dashboard/object-details/object-details.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @NgModule({
   declarations: [
     DashboardComponent,
     DbTabComponent,
-    NewConnectionModalComponent
+    NewConnectionModalComponent,
+    DocumentationComponent,
+    ObjectDetailsComponent
   ],
   imports: [
     CommonModule,
     RouterModule,
     FormsModule,
-    LucideAngularModule.pick({Database})
+    LucideAngularModule.pick({Database, Info}),
+    TranslateModule,
   ],
   exports: [
     RouterModule,
