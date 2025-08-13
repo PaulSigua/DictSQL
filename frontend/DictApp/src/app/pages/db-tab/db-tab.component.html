@@ -1,21 +1,15 @@
-<div class="text-custom p-4">
+<div class="text-custom p-3 m-3 bg-custom-surface rounded-lg shadow-sm">
   <h3 class="font-semibold mb-2">
     {{ tab.title }} <span class="text-muted">({{ tab.connectionType }})</span>
   </h3>
 
-  <div class="grid lg:grid-cols-2 gap-4">
+  <div class="flex flex-col gap-4">
     <div>
       <h4 class="text-sm font-semibold mb-1">Connection</h4>
       <pre class="text-sm text-muted bg-label rounded p-2 overflow-auto">{{ tab.connectionData | json }}</pre>
     </div>
-
-    <div class="flex items-start gap-2">
-      <button class="px-3 py-2 rounded border border-[var(--color-border)] hover:bg-label-hover">
-        Test connection
-      </button>
-      <button class="px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">
-        Sync metadata
-      </button>
+    <div>
+      <h1>Database Description</h1>
     </div>
   </div>
 </div>

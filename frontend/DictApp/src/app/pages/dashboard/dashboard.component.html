@@ -1,6 +1,6 @@
 <div class="min-h-full flex flex-col">
   <div *ngIf="hasTabs$ | async" class="sticky top-0 z-10 bg-custom-surface border-b border-[var(--color-border)]">
-    <div class="px-3 py-2">
+    <div class="px-3 pt-2">
       <div class="w-full overflow-x-auto custom-scroll">
         <div class="inline-flex gap-2 whitespace-nowrap">
           <div
@@ -21,41 +21,39 @@
               class="ml-1 px-2 leading-none rounded hover:bg-[var(--color-background-label)]"
               (click)="close(tab.id); $event.stopPropagation()"
               aria-label="Cerrar"
-            >×</button>
+            >
+              <lucide-icon name="X" class="w-3" />
+            </button>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div *ngIf="hasTabs$ | async; else emptyState" class="flex-1 min-h-0 overflow-auto p-3">
-    <div class="rounded-b-lg border border-t-0 border-[var(--color-border)] bg-custom-surface shadow-sm">
+    <div *ngIf="hasTabs$ | async; else emptyState" class="flex-1 min-h-0 overflow-auto">
+    <div class="rounded-b-lg border border-t-0 border-[var(--color-border)] bg-custom-background shadow-sm text-custom">
 
       <ng-container *ngIf="activeTab$ | async as activeTab">
         <app-db-tab [tab]="activeTab"></app-db-tab>
 
-        <div class="flex flex-wrap gap-2 mb-4 bg-custom-background p-2 rounded-t-lg">
-          <a
-            routerLink="documentation"
-            routerLinkActive="bg-custom-background border-custom text-custom shadow-sm"
-            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg"
-          >
+        <div class="flex flex-wrap bg-custom-background p-1 rounded-t-lg w-fit m-3">
+          <a routerLink="documentation"
+             routerLinkActive="bg-custom-surface border-custom shadow-sm"
+             class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg">
             <lucide-icon name="FileText" class="w-4 h-4"></lucide-icon>
             <span>Documentation</span>
           </a>
 
-          <a
-            routerLink="object-details"
-            routerLinkActive="bg-custom-background border-custom text-custom shadow-sm"
-            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg"
-          >
+          <a routerLink="object-details"
+             routerLinkActive="bg-custom-surface border-custom shadow-sm"
+             class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg">
             <lucide-icon name="Info" class="w-4 h-4"></lucide-icon>
             <span>Object Details</span>
           </a>
         </div>
       </ng-container>
 
-      <div class="p-4 bg-custom-background h-full overflow-auto">
+      <div class="p-4 bg-custom-surface h-full overflow-auto">
         <router-outlet></router-outlet>
       </div>
     </div>

@@ -8,7 +8,8 @@ import { FormsModule } from '@angular/forms';
 import {
   Database,
   LucideAngularModule,
-  Info
+  Info,
+  X
 } from 'lucide-angular';
 import { DocumentationComponent } from './dashboard/documentation/documentation.component';
 import { ObjectDetailsComponent } from './dashboard/object-details/object-details.component';
@@ -27,7 +28,7 @@ import { TranslateModule } from '@ngx-translate/core';
     CommonModule,
     RouterModule,
     FormsModule,
-    LucideAngularModule.pick({Database, Info}),
+    LucideAngularModule.pick({Database, Info, X}),
     TranslateModule,
   ],
   exports: [

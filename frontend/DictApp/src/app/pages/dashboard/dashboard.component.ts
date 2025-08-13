@@ -3,6 +3,7 @@ import { Observable, map } from 'rxjs';
 import { DbTab } from '../../models/db-tab.model';
 import { TabManagerService } from '../../services/tab/tab-manager.service';
 import { TranslateService } from '@ngx-translate/core';
+import { UiBusService } from '../../services/ui/ui-bus.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,7 +16,10 @@ export class DashboardComponent {
   hasTabs$: Observable<boolean>;
   activeTab$: Observable<DbTab | null>;
 
-  constructor(private tabService: TabManagerService) {
+  constructor(
+    private tabService: TabManagerService,
+    private ui: UiBusService
+  ) {
     this.tabs$ = this.tabService.tabs$;
     this.hasTabs$ = this.tabs$.pipe(map(t => t.length > 0));
     this.activeTab$ = this.tabs$.pipe(map(t => t.find(x => x.active) ?? null));
@@ -34,9 +38,6 @@ export class DashboardComponent {
   }
 
   openSidenavNewConnection() {
-  const btn = document.querySelector('app-sidenav button');
-  if (btn) {
-    btn.dispatchEvent(new Event('click'));
+    this.ui.openNewConnection$.next();
   }
-}
 }

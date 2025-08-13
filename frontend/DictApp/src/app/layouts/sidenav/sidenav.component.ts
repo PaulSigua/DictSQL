@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { TabManagerService } from '../../services/tab/tab-manager.service';
 import { DbTab } from '../../models/db-tab.model';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
+import { UiBusService } from '../../services/ui/ui-bus.service';
 
 @Component({
   selector: 'app-sidenav',
@@ -14,16 +15,27 @@ import { map } from 'rxjs/operators';
 export class SidenavComponent implements OnInit {
   showNewConnectionModal = false;
   hasConnection$!: Observable<boolean>;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private translate: TranslateService,
-    private tabService: TabManagerService
+    private tabService: TabManagerService,
+    private ui: UiBusService
   ) {}
 
   ngOnInit(): void {
     this.hasConnection$ = this.tabService.tabs$.pipe(
       map((tabs) => tabs.length > 0)
     );
+
+    this.ui.openNewConnection$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.openNewConnection());
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   openNewConnection() {
