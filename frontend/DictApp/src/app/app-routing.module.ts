@@ -4,6 +4,7 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
 import { DocumentationComponent } from './pages/dashboard/documentation/documentation.component';
 import { ObjectDetailsComponent } from './pages/dashboard/object-details/object-details.component';
+import { TablesComponent } from './pages/dashboard/documentation/tables/tables.component';
 
 const routes: Routes = [
   {
@@ -26,7 +27,18 @@ const routes: Routes = [
           },
           {
             path: 'documentation',
-            component: DocumentationComponent
+            component: DocumentationComponent,
+            children: [
+              {
+                path: '',
+                pathMatch: 'full',
+                redirectTo: 'tables'
+              },
+              {
+                path: 'tables',
+                component: TablesComponent
+              }
+            ]
           },
           {
             path: 'object-details',

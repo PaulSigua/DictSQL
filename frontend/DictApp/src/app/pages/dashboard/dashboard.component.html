@@ -31,10 +31,9 @@
   </div>
 
     <div *ngIf="hasTabs$ | async; else emptyState" class="flex-1 min-h-0 overflow-auto">
-    <div class="rounded-b-lg border border-t-0 border-[var(--color-border)] bg-custom-background shadow-sm text-custom">
+    <div class="rounded-b-lg border border-t-0 border-[var(--color-border)] bg-custom-surface shadow-sm text-custom">
 
       <ng-container *ngIf="activeTab$ | async as activeTab">
-        <app-db-tab [tab]="activeTab"></app-db-tab>
 
         <div class="flex flex-wrap bg-custom-background p-1 rounded-t-lg w-fit m-3">
           <a routerLink="documentation"
@@ -53,7 +52,7 @@
         </div>
       </ng-container>
 
-      <div class="p-4 bg-custom-surface h-full overflow-auto">
+      <div class="p-4 h-full overflow-auto">
         <router-outlet></router-outlet>
       </div>
     </div>
