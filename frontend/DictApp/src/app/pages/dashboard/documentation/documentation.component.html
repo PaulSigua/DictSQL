@@ -61,23 +61,23 @@
         </div>
       </div>
 
-      <div class="border border-custom rounded-lg p-4 bg-[var(--color-accent-blue-light)]/20">
+      <div class="border border-custom rounded-lg p-4 bg-custom-surface">
         <h3 class="font-semibold mb-4">Estadísticas de la base de datos</h3>
 
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-          <div class="bg-white rounded-lg border border-custom p-3">
+          <div class="bg-custom-surface rounded-lg border border-custom p-3">
             <div class="text-2xl font-semibold text-blue-600">4</div>
             <div class="text-xs text-muted mt-1">Cuadros</div>
           </div>
-          <div class="bg-white rounded-lg border border-custom p-3">
+          <div class="bg-custom-surface rounded-lg border border-custom p-3">
             <div class="text-2xl font-semibold text-green-600">52</div>
             <div class="text-xs text-muted mt-1">Columnas</div>
           </div>
-          <div class="bg-white rounded-lg border border-custom p-3">
+          <div class="bg-custom-surface rounded-lg border border-custom p-3">
             <div class="text-2xl font-semibold text-purple-600">2</div>
             <div class="text-xs text-muted mt-1">Vistas</div>
           </div>
-          <div class="bg-white rounded-lg border border-custom p-3">
+          <div class="bg-custom-surface rounded-lg border border-custom p-3">
             <div class="text-2xl font-semibold text-orange-600">2</div>
             <div class="text-xs text-muted mt-1">Procedimientos</div>
           </div>
@@ -86,13 +86,13 @@
 
       <div class="flex flex-col gap-3">
         <button type="button"
-          class="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg border border-custom bg-white hover:bg-[var(--color-background-label)] transition">
+          class="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg border border-custom bg-custom-surface hover:bg-[var(--color-background-label)] transition">
           <lucide-icon name="Download" class="w-4 h-4"></lucide-icon>
           <span>Documentación sobre la exportación (PDF)</span>
         </button>
 
         <button type="button"
-          class="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg border border-custom bg-white hover:bg-[var(--color-background-label)] transition">
+          class="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg border border-custom bg-custom-surface hover:bg-[var(--color-background-label)] transition">
           <lucide-icon name="FileText" class="w-4 h-4"></lucide-icon>
           <span>Exportar Diccionario de Datos (Excel)</span>
         </button>
@@ -100,27 +100,24 @@
     </div>
   </div>
 </div>
-<div class="flex-1 min-h-0 overflow-auto pt-2">
 
 <div class="flex-1 min-h-0 overflow-auto">
-    <div class="text-custom">
+  <div class="text-custom">
+    <ng-container *ngIf="activeTab$ | async as activeTab">
+      <div class="flex flex-wrap bg-custom-background p-1 rounded-t-lg w-fit mt-3">
+        <a routerLink="tables"
+          routerLinkActive="bg-custom-surface border-custom shadow-sm"
+          class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg">
+          <lucide-icon name="FileText" class="w-4 h-4"></lucide-icon>
+          <span>Tables</span>
+        </a>
 
-        <ng-container *ngIf="activeTab$ | async as activeTab">
-
-        <div class="flex flex-wrap bg-custom-background p-1 rounded-t-lg w-fit m-3">
-          <a routerLink="tables"
-            routerLinkActive="bg-custom-surface border-custom shadow-sm"
-            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg">
-            <lucide-icon name="FileText" class="w-4 h-4"></lucide-icon>
-            <span>Tables</span>
-          </a>
-
-          <a routerLink="columns"
-            routerLinkActive="bg-custom-surface border-custom shadow-sm"
-            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg">
-            <lucide-icon name="FileText" class="w-4 h-4"></lucide-icon>
-            <span>Columns</span>
-          </a>
+        <a routerLink="columns"
+          routerLinkActive="bg-custom-surface border-custom shadow-sm"
+          class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg">
+          <lucide-icon name="FileText" class="w-4 h-4"></lucide-icon>
+          <span>Columns</span>
+        </a>
       </div>
     </ng-container>
 
