@@ -5,6 +5,7 @@ import { MainLayoutComponent } from './layouts/main-layout/main-layout.component
 import { DocumentationComponent } from './pages/dashboard/documentation/documentation.component';
 import { ObjectDetailsComponent } from './pages/dashboard/object-details/object-details.component';
 import { TablesComponent } from './pages/dashboard/documentation/tables/tables.component';
+import { ColumnsComponent } from './pages/dashboard/documentation/columns/columns.component';
 
 const routes: Routes = [
   {
@@ -37,6 +38,10 @@ const routes: Routes = [
               {
                 path: 'tables',
                 component: TablesComponent
+              },
+              {
+                path: 'columns',
+                component: ColumnsComponent
               }
             ]
           },

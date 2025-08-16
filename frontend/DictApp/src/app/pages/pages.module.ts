@@ -17,6 +17,7 @@ import { DocumentationComponent } from './dashboard/documentation/documentation.
 import { ObjectDetailsComponent } from './dashboard/object-details/object-details.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { TablesComponent } from './dashboard/documentation/tables/tables.component';
+import { ColumnsComponent } from './dashboard/documentation/columns/columns.component';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { TablesComponent } from './dashboard/documentation/tables/tables.compone
     NewConnectionModalComponent,
     DocumentationComponent,
     ObjectDetailsComponent,
-    TablesComponent
+    TablesComponent,
+    ColumnsComponent
   ],
   imports: [
     CommonModule,

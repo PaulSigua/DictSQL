@@ -30,22 +30,22 @@
     </div>
   </div>
 
-    <div *ngIf="hasTabs$ | async; else emptyState" class="flex-1 min-h-0 overflow-auto">
+  <div *ngIf="hasTabs$ | async; else emptyState" class="flex-1 min-h-0 overflow-auto">
     <div class="rounded-b-lg border border-t-0 border-[var(--color-border)] bg-custom-surface shadow-sm text-custom">
 
       <ng-container *ngIf="activeTab$ | async as activeTab">
 
         <div class="flex flex-wrap bg-custom-background p-1 rounded-t-lg w-fit m-3">
           <a routerLink="documentation"
-             routerLinkActive="bg-custom-surface border-custom shadow-sm"
-             class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg">
+            routerLinkActive="bg-custom-surface border-custom shadow-sm"
+            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg">
             <lucide-icon name="FileText" class="w-4 h-4"></lucide-icon>
             <span>Documentation</span>
           </a>
 
           <a routerLink="object-details"
-             routerLinkActive="bg-custom-surface border-custom shadow-sm"
-             class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg">
+            routerLinkActive="bg-custom-surface border-custom shadow-sm"
+            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg">
             <lucide-icon name="Info" class="w-4 h-4"></lucide-icon>
             <span>Object Details</span>
           </a>

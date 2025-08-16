@@ -100,8 +100,32 @@
     </div>
   </div>
 </div>
+<div class="flex-1 min-h-0 overflow-auto pt-2">
 
+<div class="flex-1 min-h-0 overflow-auto">
+    <div class="text-custom">
 
-<div class="pt-4 bg-custom-surface h-full overflow-auto">
-    <router-outlet></router-outlet>
+        <ng-container *ngIf="activeTab$ | async as activeTab">
+
+        <div class="flex flex-wrap bg-custom-background p-1 rounded-t-lg w-fit m-3">
+          <a routerLink="tables"
+            routerLinkActive="bg-custom-surface border-custom shadow-sm"
+            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg">
+            <lucide-icon name="FileText" class="w-4 h-4"></lucide-icon>
+            <span>Tables</span>
+          </a>
+
+          <a routerLink="columns"
+            routerLinkActive="bg-custom-surface border-custom shadow-sm"
+            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg">
+            <lucide-icon name="FileText" class="w-4 h-4"></lucide-icon>
+            <span>Columns</span>
+          </a>
+      </div>
+    </ng-container>
+
+    <div class="pt-4 bg-custom-surface h-full overflow-auto">
+        <router-outlet></router-outlet>
+    </div>
+  </div>
 </div>
