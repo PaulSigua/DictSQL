@@ -10,3 +10,4 @@ python-dotenv
 passlib
 python-jose
 pydantic[email]
+bcrypt
