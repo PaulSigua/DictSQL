@@ -4,7 +4,7 @@ import { MainLayoutComponent } from './main-layout/main-layout.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { HeaderComponent } from './header/header.component';
 import { RouterModule } from '@angular/router';
-import { LucideAngularModule, Moon } from 'lucide-angular';
+import { LucideAngularModule } from 'lucide-angular';
 import {
   Plus,
   Folder,
@@ -17,7 +17,10 @@ import {
   Database, 
   Table,
   FileText,
-  PlugZap
+  PlugZap,
+  Sun,
+  Moon,
+  Monitor
 } from 'lucide-angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
@@ -33,7 +36,7 @@ import { PagesModule } from '../pages/pages.module';
   imports: [
     CommonModule,
     RouterModule,
-    LucideAngularModule.pick({ Plus, Folder, Save, Settings, SunMoon, Search, ChevronRight, ChevronDown, Database, Table, FileText, PlugZap }),
+    LucideAngularModule.pick({ Plus, Folder, Save, Settings, SunMoon, Search, ChevronRight, ChevronDown, Database, Table, FileText, PlugZap, Sun, Moon, Monitor }),
     TranslateModule,
     FormsModule,
     PagesModule

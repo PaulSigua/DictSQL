@@ -2,29 +2,112 @@
   class="bg-custom-background border-b border-custom p-4 justify-between items-center flex w-full gap-4"
 >
   <div class="flex gap-4 justify-center items-center">
-    <div>
-      <h1 class="text-custom font-semibold">DemoDB</h1>
-    </div>
-    <div>
-      <h2 class="text-custom bg-label p-1 rounded-lg">PostgreSQL</h2>
-    </div>
+    <div><h1 class="text-custom font-semibold">DemoDB</h1></div>
+    <div><h2 class="text-custom bg-label p-1 rounded-lg">PostgreSQL</h2></div>
   </div>
 
-  <div class="flex gap-2">
+  <div class="flex gap-2 items-center">
     <div
       class="flex w-full text-custom border border-custom bg-label-hover p-1 pl-2 pr-2 rounded-lg hover:cursor-pointer gap-1"
     >
       <lucide-icon name="FileText" class="w-5" />
       <button class="flex hover:cursor-pointer">
-        {{ "GENERATE_DOC" | translate }}
+        {{ 'GENERATE_DOC' | translate }}
       </button>
     </div>
 
-    <div class="flex border border-custom bg-label-hover rounded-lg">
-      <button (click)="toggleDark()" class="flex text-custom p-1">
-        <lucide-icon name="SunMoon" class="justify-center w-5 h-5" />
+    <div class="relative ml-1 mr-1">
+      <button
+        id="theme-toggle-btn"
+        type="button"
+        (click)="toggleMenu()"
+        class="appearance-none border border-custom bg-label-hover flex items-center justify-center p-1 rounded-lg
+              hover:scale-110 transition will-change-transform focus:outline-none
+              focus-visible:ring-2 focus-visible:ring-green-400/70 focus-visible:ring-offset-2 text-custom"
+        [attr.aria-haspopup]="'menu'"
+        [attr.aria-expanded]="isMenuOpen"
+        aria-controls="themes-menu"
+        title="Elige tema"
+      >
+        <!-- Pila de íconos: solo uno activo -->
+        <span class="relative inline-block w-5 h-5">
+          <lucide-icon
+            name="Sun"
+            class="theme-toggle-icon absolute inset-0 w-5 h-5 transition-all origin-center"
+            [class.active]="currentTheme !== 'system' && effective === 'light'"
+          />
+          <lucide-icon
+            name="Moon"
+            class="theme-toggle-icon absolute inset-0 w-5 h-5 transition-all origin-center"
+            [class.active]="currentTheme !== 'system' && effective === 'dark'"
+          />
+          <lucide-icon
+            name="Monitor"
+            class="theme-toggle-icon absolute inset-0 w-5 h-5 transition-all origin-center"
+            [class.active]="currentTheme === 'system'"
+          />
+        </span>
       </button>
+
+      <div
+        id="themes-menu"
+        class="absolute top-9 right-0 text-sm p-1 min-w-[6rem] rounded-md
+              border border-gray-100 bg-custom-background dark:bg-gray-900/90 dark:border-white/10
+              shadow-[0_8px_24px_rgba(0,0,0,0.2)] backdrop-blur-md hidden"
+        [class.open]="isMenuOpen"
+        role="menu"
+        aria-label="Seleccionar tema"
+      >
+        <ul class="outline-none" id="themes-list">
+          <li>
+            <button
+              type="button"
+              class="themes-menu-option w-full px-2 py-1.5 rounded-sm
+                    hover:bg-neutral-400/30 dark:hover:bg-gray-500/40
+                    focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400/70
+                    flex items-center gap-2 justify-between text-custom"
+              role="menuitemradio"
+              [attr.aria-checked]="isActive('light')"
+              (click)="chooseTheme('light')"
+            >
+              <span class="capitalize">Light</span>
+              <span class="check-dot size-2 rounded-full bg-green-500" [class.hidden]="!isActive('light')"></span>
+            </button>
+          </li>
+          <li>
+            <button
+              type="button"
+              class="themes-menu-option w-full px-2 py-1.5 rounded-sm
+                    hover:bg-neutral-400/30 dark:hover:bg-gray-500/40
+                    focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400/70
+                    flex items-center gap-2 justify-between text-custom"
+              role="menuitemradio"
+              [attr.aria-checked]="isActive('dark')"
+              (click)="chooseTheme('dark')"
+            >
+              <span class="capitalize">Dark</span>
+              <span class="check-dot size-2 rounded-full bg-green-500" [class.hidden]="!isActive('dark')"></span>
+            </button>
+          </li>
+          <li>
+            <button
+              type="button"
+              class="themes-menu-option w-full px-2 py-1.5 rounded-sm
+                    hover:bg-neutral-400/30 dark:hover:bg-gray-500/40
+                    focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400/70
+                    flex items-center gap-2 justify-between text-custom"
+              role="menuitemradio"
+              [attr.aria-checked]="isActive('system')"
+              (click)="chooseTheme('system')"
+            >
+              <span class="capitalize">System</span>
+              <span class="check-dot size-2 rounded-full bg-green-500" [class.hidden]="!isActive('system')"></span>
+            </button>
+          </li>
+        </ul>
+      </div>
     </div>
+
     <select
       #languageSelect
       name="language"
