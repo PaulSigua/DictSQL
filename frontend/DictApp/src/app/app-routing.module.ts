@@ -6,57 +6,44 @@ import { DocumentationComponent } from './pages/dashboard/documentation/document
 import { ObjectDetailsComponent } from './pages/dashboard/object-details/object-details.component';
 import { TablesComponent } from './pages/dashboard/documentation/tables/tables.component';
 import { ColumnsComponent } from './pages/dashboard/documentation/columns/columns.component';
+import { LoginComponent } from './pages/auth/login/login.component';
+import { SigninComponent } from './pages/auth/signin/signin.component';
 
 const routes: Routes = [
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'login',
+  },
+
+  { path: 'login', component: LoginComponent },
+  { path: 'signin', component: SigninComponent },
+
   {
     path: '',
     component: MainLayoutComponent,
     children: [
       {
-        path: '',
-        pathMatch: 'full',
-        redirectTo: 'dashboard'
-      },
-      {
         path: 'dashboard',
         component: DashboardComponent,
         children: [
-          {
-            path: '',
-            pathMatch: 'full',
-            redirectTo: 'documentation'
-          },
+          { path: '', pathMatch: 'full', redirectTo: 'documentation' },
           {
             path: 'documentation',
             component: DocumentationComponent,
             children: [
-              {
-                path: '',
-                pathMatch: 'full',
-                redirectTo: 'tables'
-              },
-              {
-                path: 'tables',
-                component: TablesComponent
-              },
-              {
-                path: 'columns',
-                component: ColumnsComponent
-              }
-            ]
+              { path: '', pathMatch: 'full', redirectTo: 'tables' },
+              { path: 'tables', component: TablesComponent },
+              { path: 'columns', component: ColumnsComponent },
+            ],
           },
-          {
-            path: 'object-details',
-            component: ObjectDetailsComponent
-          }
-        ]
+          { path: 'object-details', component: ObjectDetailsComponent },
+        ],
       },
-      {
-        path: '**',
-        redirectTo: ''
-      }
-    ]
-  }
+    ],
+  },
+  
+  { path: '**', redirectTo: 'login' },
 ];
 
 @NgModule({

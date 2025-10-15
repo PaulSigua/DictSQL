@@ -18,16 +18,19 @@ import { ObjectDetailsComponent } from './dashboard/object-details/object-detail
 import { TranslateModule } from '@ngx-translate/core';
 import { TablesComponent } from './dashboard/documentation/tables/tables.component';
 import { ColumnsComponent } from './dashboard/documentation/columns/columns.component';
+import { LoginComponent } from './auth/login/login.component';
+import { HeaderComponent } from '../layouts/header/header.component';
+import { SharedModule } from '../shared/shared.module';
 
 
 @NgModule({
   declarations: [
     DashboardComponent,
-    NewConnectionModalComponent,
     DocumentationComponent,
     ObjectDetailsComponent,
     TablesComponent,
-    ColumnsComponent
+    ColumnsComponent,
+    LoginComponent,
   ],
   imports: [
     CommonModule,
@@ -35,11 +38,11 @@ import { ColumnsComponent } from './dashboard/documentation/columns/columns.comp
     FormsModule,
     LucideAngularModule.pick({Database, Info, X, User, Calendar, Download}),
     TranslateModule,
+    SharedModule
   ],
   exports: [
     RouterModule,
     DashboardComponent,
-    NewConnectionModalComponent
   ]
 })
 export class PagesModule { }

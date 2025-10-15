@@ -25,13 +25,13 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { PagesModule } from '../pages/pages.module';
+import { SharedModule } from '../shared/shared.module';
 
 
 @NgModule({
   declarations: [
     MainLayoutComponent,
     SidenavComponent,
-    HeaderComponent
   ],
   imports: [
     CommonModule,
@@ -39,13 +39,12 @@ import { PagesModule } from '../pages/pages.module';
     LucideAngularModule.pick({ Plus, Folder, Save, Settings, SunMoon, Search, ChevronRight, ChevronDown, Database, Table, FileText, PlugZap, Sun, Moon, Monitor }),
     TranslateModule,
     FormsModule,
-    PagesModule
+    SharedModule
   ],
   exports: [
     RouterModule,
     MainLayoutComponent,
     SidenavComponent,
-    HeaderComponent
   ]
 })
 export class LayoutsModule { }

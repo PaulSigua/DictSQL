@@ -4,7 +4,7 @@ from typing import Optional, List
 from services.connection_store import store_connection_in_db, get_connection_from_db, update_connection_status, get_all_connections
 from services.metadata_service import generate_connection_string, get_enriched_metadata
 from services.batch_connection import validate_connections
-from tests.test_connection_sql import test_connection_and_schema_postgresql
+from tests.test_connection_sql import test_connection_and_schema
 from security.deps import get_current_user
 from models.user_model import User
 
@@ -27,7 +27,7 @@ async def connect_database(
         connection_string = generate_connection_string(conn_dict)
         conn_dict["connection_string"] = connection_string
 
-        result = test_connection_and_schema_postgresql(connection_string)
+        result = test_connection_and_schema(connection_string)
         if result["status"] != "success":
             raise HTTPException(status_code=400, detail=result["detail"])
 
