@@ -1,0 +1,70 @@
+<app-header></app-header>
+
+<div
+  class="bg-custom-background border border-custom rounded-2xl p-8 max-w-md w-full mt-10 shadow-2xl flex flex-col gap-8"
+>
+  <div class="text-center">
+    <h2 class="text-3xl font-extrabold text-blue-500">Registrate</h2>
+    <p class="text-gray-400 mt-2 text-sm">
+      Bienvenido a <span class="text-blue-500 font-semibold">DictSQL</span>
+    </p>
+  </div>
+
+  <form action="submit" class="flex flex-col gap-4">
+    <div class="flex flex-col gap-2">
+      <label class="text-sm text-gray-300 font-medium" for="name">Nombre</label>
+      <input
+        id="name"
+        class="border border-custom rounded-lg p-3 bg-label text-custom placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
+        type="text"
+        placeholder="Dict"
+        required
+      />
+      <label class="text-sm text-gray-300 font-medium" for="lastname">Apellido</label>
+      <input
+        id="lastname"
+        class="border border-custom rounded-lg p-3 bg-label text-custom placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
+        type="text"
+        placeholder="SQL"
+        required
+      />
+      <label class="text-sm text-gray-300 font-medium" for="username"
+        >Usuario</label
+      >
+      <input
+        id="username"
+        class="border border-custom rounded-lg p-3 bg-label text-custom placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
+        type="text"
+        placeholder="Nombre de usuario"
+        required
+      />
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label class="text-sm text-gray-300 font-medium" for="password"
+        >Contraseña</label
+      >
+      <input
+        id="password"
+        class="border border-custom rounded-lg p-3 bg-label text-custom placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
+        type="password"
+        placeholder="••••••••"
+        required
+      />
+    </div>
+
+    <button
+      type="submit"
+      class="mt-2 py-3 rounded-lg bg-blue-400 text-white font-semibold hover:bg-blue-500 transition hover:cursor-pointer"
+    >
+      Guardar
+    </button>
+  </form>
+
+  <p class="text-sm text-center text-gray-400">
+    ¿Ya tienes una cuenta?
+    <a href="auth/login" class="text-blue-500 hover:underline font-medium">
+      Inicia sesión aquí
+    </a>
+  </p>
+</div>
