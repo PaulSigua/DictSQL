@@ -21,6 +21,8 @@ import { ColumnsComponent } from './dashboard/documentation/columns/columns.comp
 import { LoginComponent } from './auth/login/login.component';
 import { HeaderComponent } from '../layouts/header/header.component';
 import { SharedModule } from '../shared/shared.module';
+import { SignupComponent } from './auth/signup/signup.component';
+import { AuthComponent } from './auth/auth.component';
 
 
 @NgModule({
@@ -31,6 +33,8 @@ import { SharedModule } from '../shared/shared.module';
     TablesComponent,
     ColumnsComponent,
     LoginComponent,
+    SignupComponent,
+    AuthComponent,
   ],
   imports: [
     CommonModule,

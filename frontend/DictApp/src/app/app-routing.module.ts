@@ -7,18 +7,25 @@ import { ObjectDetailsComponent } from './pages/dashboard/object-details/object-
 import { TablesComponent } from './pages/dashboard/documentation/tables/tables.component';
 import { ColumnsComponent } from './pages/dashboard/documentation/columns/columns.component';
 import { LoginComponent } from './pages/auth/login/login.component';
-import { SigninComponent } from './pages/auth/signin/signin.component';
+import { SignupComponent } from './pages/auth/signup/signup.component';
+import { AuthComponent } from './pages/auth/auth.component';
 
 const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'login',
+    redirectTo: 'auth',
   },
 
-  { path: 'login', component: LoginComponent },
-  { path: 'signin', component: SigninComponent },
-
+  {
+    path: 'auth',
+    component: AuthComponent,
+    children: [
+      { path: 'login', component: LoginComponent },
+      { path: 'signup', component: SignupComponent },
+      { path: '', pathMatch: 'full', redirectTo: 'login' },
+    ],
+  },
   {
     path: '',
     component: MainLayoutComponent,
@@ -42,12 +49,12 @@ const routes: Routes = [
       },
     ],
   },
-  
+
   { path: '**', redirectTo: 'login' },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
