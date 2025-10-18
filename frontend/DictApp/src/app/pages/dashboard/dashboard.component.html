@@ -58,23 +58,38 @@
     </div>
   </div>
 
-  <ng-template #emptyState>
-    <div class="flex-1 min-h-0 overflow-auto p-8">
-      <div class="mx-auto max-w-lg text-center text-muted">
-        <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[var(--color-accent-blue-light)] mb-3">
-          <lucide-icon name="PlugZap" class="w-6 h-6 text-blue-600"></lucide-icon>
-        </div>
-        <h3 class="text-custom font-semibold mb-1">
-          {{ 'DASHBOARD.NO_CONNECTIONS_TITLE' | translate : { default: 'No connections yet' } }}
-        </h3>
-        <p class="mb-4">
-          {{ 'DASHBOARD.NO_CONNECTIONS_DESC' | translate : { default: 'Create your first connection to start documenting.' } }}
-        </p>
-        <button class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
-                (click)="openSidenavNewConnection()">
-          {{ 'DASHBOARD.CREATE_FIRST' | translate : { default: 'Create a connection' } }}
-        </button>
+  <<ng-template #emptyState>
+  <div class="flex-1 min-h-0 overflow-auto flex items-center justify-center p-8 bg-custom-surface custom-scroll">
+    <div
+      class="mx-auto max-w-md text-center bg-custom-background border border-custom rounded-2xl p-10 shadow-sm"
+    >
+      <!-- Ícono -->
+      <div
+        class="mx-auto flex items-center justify-center w-20 h-20 rounded-full bg-secondary border border-custom mb-5"
+      >
+        <lucide-icon name="PlugZap" class="w-10 h-10 text-icon-color opacity-90"></lucide-icon>
       </div>
+
+      <!-- Título -->
+      <h3 class="text-custom font-semibold text-lg mb-2">
+        {{ 'DASHBOARD.NO_CONNECTIONS_TITLE' | translate : { default: 'No connections yet' } }}
+      </h3>
+
+      <!-- Descripción -->
+      <p class="text-muted mb-6 leading-relaxed">
+        {{ 'DASHBOARD.NO_CONNECTIONS_DESC' | translate : { default: 'Create your first connection to start documenting.' } }}
+      </p>
+
+      <!-- Botón -->
+      <button
+        class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary text-white font-medium rounded-xl shadow-sm hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-primary-hover/40 transition-all"
+        (click)="openSidenavNewConnection()"
+      >
+        <lucide-icon name="Plus" class="w-4 h-4"></lucide-icon>
+        {{ 'DASHBOARD.CREATE_FIRST' | translate : { default: 'Create a connection' } }}
+      </button>
     </div>
-  </ng-template>
+  </div>
+</ng-template>
+
 </div>

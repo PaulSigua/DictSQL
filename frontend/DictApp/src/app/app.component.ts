@@ -1,29 +1,31 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Component, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { ThemeService } from './core/services/theme.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   standalone: false,
-  styleUrl: './app.component.css',
+  styleUrls: ['./app.component.css'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'DictApp';
 
   constructor(
     private translate: TranslateService,
+    private themeService: ThemeService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
-    // Idioms supported
+    // Idiomas soportados
     translate.addLangs(['en', 'es']);
-    // Idioms default
     translate.setFallbackLang('en');
 
-    // Only set the language if we are in the browser
+    // Solo configuramos idioma si estamos en el navegador
     if (isPlatformBrowser(this.platformId)) {
       const storedLang = localStorage.getItem('lang');
       const browserLang = translate.getBrowserLang();
+
       const langToUse =
         storedLang && ['en', 'es'].includes(storedLang)
           ? storedLang
@@ -33,8 +35,13 @@ export class AppComponent {
 
       translate.use(langToUse);
     } else {
-      // fallback si estás en SSR
       translate.use('en');
+    }
+  }
+
+  ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.themeService.setTheme(this.themeService.current);
     }
   }
 }

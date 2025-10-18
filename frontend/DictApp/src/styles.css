@@ -39,11 +39,11 @@ body {
 }
 
 :root {
-  --color-background: #F9FAFB;
+  --color-background: #f8f8f8;
   --color-surface: #FFFFFF;
-  --color-primary: #226de4;
-  --color-primary-hover: #2563EB;
-  --color-secondary: #E5E7EB;
+  --color-primary: #51A2FF;
+  --color-primary-hover: #2B7FFF;
+  --color-secondary: #e7f5ff;
   --color-text: #0c1934;
   --color-text-muted: #6B7280;
   --color-accent-green: #22C55E;
@@ -52,6 +52,7 @@ body {
   --color-accent-blue-light: #DBEAFE;
   --color-border: #D1D5DB;
   --color-background-label: #f2f2f2;
+  --color-icon: #2B7FFF;
   --tab-border: var(--color-border);
   --tab-border-active: var(--color-primary);
 }
@@ -59,9 +60,9 @@ body {
 body.dark {
   --color-background: #1F2937;
   --color-surface: #273044;
-  --color-primary: #3B82F6;
-  --color-primary-hover: #2563EB;
-  --color-secondary: #374151;
+  --color-primary: #3493ff;
+  --color-primary-hover: #2B7FFF;
+  --color-secondary: #445878;
   --color-text: #F3F4F6;
   --color-text-muted: #9CA3AF;
   --color-accent-green: #22C55E;
@@ -70,6 +71,7 @@ body.dark {
   --color-accent-blue-light: #1E3A8A;
   --color-border: #4B5563;
   --color-background-label: #364153;
+  --color-icon: #2B7FFF;
   --tab-border: var(--color-border);
   --tab-border-active: var(--color-primary);
 }
@@ -104,7 +106,7 @@ body.dark {
 }
 
 /* Hover Backgrounds */
-.bg-primary-hover:hover {
+.hover\:bg-primary-hover:hover {
   background-color: var(--color-primary-hover);
 }
 .bg-secondary-hover:hover {
@@ -213,4 +215,8 @@ body.dark {
 /* Firefox hover */
 .custom-scroll:hover {
   scrollbar-color: var(--color-border) transparent;
+}
+
+.text-icon-color {
+  color: var(--color-icon);
 }

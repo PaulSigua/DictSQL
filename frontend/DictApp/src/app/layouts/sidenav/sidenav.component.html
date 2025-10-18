@@ -1,7 +1,7 @@
 <aside class="w-80 bg-custom-background border-r border-custom h-screen flex flex-col">
   <div>
     <div class="p-3">
-      <h1 class="text-lg font-semibold text-custom">DictSQL</h1>
+      <h1 class="text-lg font-extrabold bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-500 bg-clip-text text-transparent text-left">DictSQL</h1>
       <p class="text-sm text-muted">{{ 'SUBTITLE' | translate }}</p>
     </div>
 
@@ -27,12 +27,12 @@
     </div>
 
     <div class="flex items-center gap-3 m-4 p-2 rounded bg-label border border-gray-300 bg-white dark:bg-gray-900">
-      <lucide-icon name="Search" class="w-4 h-4 text-gray-500 dark:text-gray-400" />
+      <lucide-icon name="Search" class="w-4 h-4 text-custom dark:text-gray-400" />
       <input
         type="text"
         placeholder="Buscar tablas, columnas..."
         aria-label="Buscar"
-        class="flex-1 focus:outline-none text-sm text-gray-700 dark:text-gray-300 placeholder:text-gray-400"
+        class="flex-1 focus:outline-none text-sm text-custom dark:text-gray-300 placeholder:text-gray-400"
       />
     </div>
   </div>
@@ -102,18 +102,12 @@
   <ng-template #emptyState>
     <div class="flex-1 flex items-center justify-center px-6">
       <div class="text-center">
-        <div class="mb-2">
-          <lucide-icon name="PlugZap" class="w-6 h-6 text-blue-600 inline-block" />
+        <div class="inline-flex justify-center items-center w-15 h-15 rounded-full bg-secondary mb-3">
+          <lucide-icon name="PlugZap" class="w-10 h-10 text-icon-color"></lucide-icon>
         </div>
         <p class="text-sm text-muted mb-3">
           {{ 'SIDENAV.connection-offline' | translate }}
         </p>
-        <button
-          class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm"
-          (click)="openNewConnection()"
-        >
-          {{ 'SIDENAV.connection-create' | translate }}
-        </button>
       </div>
     </div>
   </ng-template>

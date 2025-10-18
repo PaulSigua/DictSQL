@@ -1,70 +1,68 @@
-<app-header></app-header>
-
 <div
   class="bg-custom-background border border-custom rounded-2xl p-8 max-w-md w-full mt-10 shadow-2xl flex flex-col gap-8"
 >
   <div class="text-center">
-    <h2 class="text-3xl font-extrabold text-blue-500">Registrate</h2>
+    <h2 class="text-3xl font-extrabold text-blue-500">{{ 'AUTH.SIGNUP.TITLE' | translate }}</h2>
     <p class="text-gray-400 mt-2 text-sm">
-      Bienvenido a <span class="text-blue-500 font-semibold">DictSQL</span>
+      {{ 'AUTH.SIGNUP.SUBTITLE' | translate }}<span class="text-blue-500 font-semibold ml-1">DictSQL</span>
     </p>
   </div>
 
-  <form action="submit" class="flex flex-col gap-4">
+  <form (ngSubmit)="register()" class="flex flex-col gap-4">
     <div class="flex flex-col gap-2">
-      <label class="text-sm text-gray-300 font-medium" for="name">Nombre</label>
-      <input
-        id="name"
-        class="border border-custom rounded-lg p-3 bg-label text-custom placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
-        type="text"
-        placeholder="Dict"
-        required
-      />
-      <label class="text-sm text-gray-300 font-medium" for="lastname">Apellido</label>
-      <input
-        id="lastname"
-        class="border border-custom rounded-lg p-3 bg-label text-custom placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
-        type="text"
-        placeholder="SQL"
-        required
-      />
-      <label class="text-sm text-gray-300 font-medium" for="username"
-        >Usuario</label
+      
+      <label class="text-sm text-gray-300 font-medium" for="username-input"
+        >{{ 'AUTH.SIGNUP.USERNAME' | translate}}</label
       >
       <input
-        id="username"
+        id="username-input"
         class="border border-custom rounded-lg p-3 bg-label text-custom placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
         type="text"
-        placeholder="Nombre de usuario"
+        placeholder="DictSQLUser"
         required
-      />
-    </div>
+        name="username"
+        [(ngModel)]="newUser.username" />
 
-    <div class="flex flex-col gap-2">
-      <label class="text-sm text-gray-300 font-medium" for="password"
-        >Contraseña</label
+      <label class="text-sm text-gray-300 font-medium" for="email-input"
+        >{{ 'AUTH.SIGNUP.EMAIL' | translate}}</label
       >
       <input
-        id="password"
+        id="email-input"
+        class="border border-custom rounded-lg p-3 bg-label text-custom placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
+        type="email" placeholder="dictsql@example.com"
+        required
+        name="email"
+        [(ngModel)]="newUser.email" />
+
+      <label class="text-sm text-gray-300 font-medium" for="password-input"
+        >{{ 'AUTH.SIGNUP.PASSWORD' | translate}}</label
+      >
+      <input
+        id="password-input"
         class="border border-custom rounded-lg p-3 bg-label text-custom placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
         type="password"
         placeholder="••••••••"
         required
-      />
+        name="password"
+        [(ngModel)]="newUser.password" />
+    </div>
+
+    <div *ngIf="errorMessage" class="p-3 bg-red-800/20 text-red-400 border border-red-700 rounded-lg text-sm font-medium">
+      {{ errorMessage }}
     </div>
 
     <button
       type="submit"
       class="mt-2 py-3 rounded-lg bg-blue-400 text-white font-semibold hover:bg-blue-500 transition hover:cursor-pointer"
     >
-      Guardar
+      {{ 'AUTH.SIGNUP.BUTTON' |translate}}
     </button>
   </form>
 
   <p class="text-sm text-center text-gray-400">
-    ¿Ya tienes una cuenta?
-    <a href="auth/login" class="text-blue-500 hover:underline font-medium">
-      Inicia sesión aquí
+    {{ 'AUTH.SIGNUP.HAVE_ACCOUNT' | translate}}
+    <a [routerLink]="['/auth/login']" class="text-blue-500 hover:underline font-medium"> 
+      {{ 'AUTH.SIGNUP.LOGIN' | translate }}
     </a>
   </p>
 </div>

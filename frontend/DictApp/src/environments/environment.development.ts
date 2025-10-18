@@ -1,0 +1,3 @@
+export const environment = {
+    apiUrl: 'http://localhost:9999/api/v1',
+};
