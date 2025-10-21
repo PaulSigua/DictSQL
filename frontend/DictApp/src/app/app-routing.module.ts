@@ -9,6 +9,8 @@ import { ColumnsComponent } from './pages/dashboard/documentation/columns/column
 import { LoginComponent } from './pages/auth/login/login.component';
 import { SignupComponent } from './pages/auth/signup/signup.component';
 import { AuthComponent } from './pages/auth/auth.component';
+import { authGuard } from './services/auth/auth.guard';
+import { publicGuard } from './services/auth/public.guard';
 
 const routes: Routes = [
   {
@@ -16,10 +18,10 @@ const routes: Routes = [
     pathMatch: 'full',
     redirectTo: 'auth',
   },
-
   {
     path: 'auth',
     component: AuthComponent,
+    canActivate: [publicGuard],
     children: [
       { path: 'login', component: LoginComponent },
       { path: 'signup', component: SignupComponent },
@@ -29,6 +31,7 @@ const routes: Routes = [
   {
     path: '',
     component: MainLayoutComponent,
+    canActivate: [authGuard],
     children: [
       {
         path: 'dashboard',

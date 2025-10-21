@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Observable, map } from 'rxjs';
-import { DbTab } from '../../models/db-tab.model';
+import { DbTab } from '../../interfaces/db-tab.model';
 import { TabManagerService } from '../../services/tab/tab-manager.service';
 import { TranslateService } from '@ngx-translate/core';
 import { UiBusService } from '../../services/ui/ui-bus.service';

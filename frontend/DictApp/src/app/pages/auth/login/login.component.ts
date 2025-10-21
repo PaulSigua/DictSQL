@@ -31,7 +31,7 @@ export class LoginComponent {
       next: (response) => {
         console.log('Usuario logueado: ',response);
         this.authService.saveToken(response.access_token);
-        this.router.navigate(['dashboard']);
+        this.router.navigate(['/dashboard']);
       },
       error: (error) => {
         console.error('Error al iniciar sesion: ', error);

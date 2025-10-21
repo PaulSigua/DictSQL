@@ -1,11 +1,13 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { UserCreate } from '../../interfaces/user-create.interface';
 import { Observable } from 'rxjs';
 import { UserResponse } from '../../interfaces/user-response.interface';
 import { environment } from '../../../environments/environment.development';
 import { UserLogin } from '../../interfaces/user-login.interface';
 import { TokenResponse } from '../../interfaces/user-token.interface';
+import { Router } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +17,11 @@ export class AuthService {
   private registerUrl = `${environment.apiUrl}/auth/register`;
   private loginUrl = `${environment.apiUrl}/auth/login`;
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) { }
 
   /**
    * Realiza la petición POST al endpoint de registro de FastAPI.
@@ -39,6 +45,33 @@ export class AuthService {
    * @param token - Valor de autenticación cifrado.
    */
   saveToken(token: string): void {
-    localStorage.setItem('auth_token', token);
+    // Solo se ejecuta en el navegador
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem('access_token', token);
+    }
+  }
+
+  /**
+   * Revisa si hay un token de acceso en el localStorage.
+   */
+  public isAuthenticated(): boolean {
+    // Solo se ejecuta en el navegador
+    if (isPlatformBrowser(this.platformId)) {
+      const token = localStorage.getItem('access_token');
+      return !!token; 
+    }
+    // Si estamos en el servidor, nunca estamos autenticados
+    return false;
+  }
+
+  /**
+   * Elimina el token y redirige al login.
+   */
+  public logout(): void {
+    // Solo se ejecuta en el navegador
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('access_token');
+      this.router.navigate(['/auth/login']);
+    }
   }
 }

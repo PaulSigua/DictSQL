@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { DbTab } from '../../models/db-tab.model';
+import { DbTab } from '../../interfaces/db-tab.model';
 
 @Injectable({
   providedIn: 'root',

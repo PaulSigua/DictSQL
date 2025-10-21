@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { TabManagerService } from '../../services/tab/tab-manager.service';
-import { DbTab } from '../../models/db-tab.model';
+// La interfaz DbTab ya no se usa aquí, se podría quitar
+// import { DbTab } from '../../interfaces/db-tab.model'; 
 import { Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { UiBusService } from '../../services/ui/ui-bus.service';
@@ -42,22 +43,11 @@ export class SidenavComponent implements OnInit {
     this.showNewConnectionModal = true;
   }
 
-  createTab(payload: {
-    projectName: string;
-    type: 'PostgreSQL' | 'SQLServer' | string;
-    connection: any;
-  }) {
-    const tab: DbTab = {
-      id: crypto.randomUUID(),
-      title: `${payload.projectName} (${payload.type})`,
-      connectionType: payload.type,
-      connectionData: payload.connection,
-      active: true,
-    };
-    this.tabService.openTab(tab);
-    this.showNewConnectionModal = false;
-  }
+  // --- ¡LA FUNCIÓN createTab() SE HA ELIMINADO DE AQUÍ! ---
 
+  // Este objeto es para datos de ejemplo, lo cual está bien por ahora.
+  // El siguiente paso sería llenar esto con los datos del schema
+  // de la pestaña activa.
   database = {
     name: 'DemoDB',
     schemas: [

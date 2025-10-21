@@ -32,7 +32,7 @@ export class SignupComponent {
     this.authService.register(this.newUser).subscribe({
       next: (response) => {
         console.log('Usuario registrado: ', response)
-        this.router.navigate(['auth/login']);
+        this.router.navigate(['/auth/login']);
       },
       error: (error) => {
         console.error('Error en el registro: ', error);
