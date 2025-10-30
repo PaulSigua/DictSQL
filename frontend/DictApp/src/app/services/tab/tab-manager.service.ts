@@ -37,4 +37,17 @@ export class TabManagerService {
   getActiveTab() {
     return this.tabs.find(t => t.active);
   }
+
+  updateActiveTabData(dataToUpdate: Partial<DbTab>) {
+    const activeTabIndex = this.tabs.findIndex(t => t.active);
+
+    if (activeTabIndex !== -1) {
+      this.tabs[activeTabIndex] = {
+        ...this.tabs[activeTabIndex],
+        ...dataToUpdate
+      };
+
+      this.tabsSubject.next([...this.tabs]);
+    }
+  }
 }

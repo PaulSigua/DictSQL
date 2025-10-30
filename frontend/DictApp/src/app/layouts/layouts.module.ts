@@ -4,7 +4,7 @@ import { MainLayoutComponent } from './main-layout/main-layout.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { HeaderComponent } from './header/header.component';
 import { RouterModule } from '@angular/router';
-import { LucideAngularModule } from 'lucide-angular';
+import { DatabaseZap, FunctionSquare, LucideAngularModule, View } from 'lucide-angular';
 import {
   Plus,
   Folder,
@@ -36,7 +36,8 @@ import { SharedModule } from '../shared/shared.module';
   imports: [
     CommonModule,
     RouterModule,
-    LucideAngularModule.pick({ Plus, Folder, Save, Settings, SunMoon, Search, ChevronRight, ChevronDown, Database, Table, FileText, PlugZap, Sun, Moon, Monitor }),
+    LucideAngularModule.pick({ Plus, Folder, Save, Settings, SunMoon, Search, ChevronRight, 
+      ChevronDown, Database, Table, FileText, PlugZap, Sun, Moon, Monitor, View, DatabaseZap, FunctionSquare }),
     TranslateModule,
     FormsModule,
     SharedModule

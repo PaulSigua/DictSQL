@@ -3,6 +3,7 @@ import { environment } from '../../../environments/environment.development';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { BaseConnectionInput, ConnectionTestResponse, MetadataResponse } from '../../interfaces/connection.interface';
 import { catchError, Observable, throwError } from 'rxjs';
+import { MetadataApiResponse } from '../../interfaces/metadata.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -30,11 +31,11 @@ export class ConnectionService {
    * Endpoint para obtener la metadata enriquecida de una conexión existente.
    * @param connectionId - El ID de la conexión
    */
-  getMetadata(connectionId: string): Observable<MetadataResponse> {
-    return this.http.get<MetadataResponse>(
+  getMetadata(connectionId: string): Observable<MetadataApiResponse> { 
+    return this.http.get<MetadataApiResponse>( // <-- Actualiza el tipo aquí
       `${this.connectionsUrl}/metadata/${connectionId}`
     ).pipe(
-      catchError(this.handleError) // Manejo de errores
+      catchError(this.handleError)
     );
   }
 
@@ -47,4 +48,6 @@ export class ConnectionService {
     // Devuelve el error completo para que el componente pueda leer `error.error.detail`
     return throwError(() => error); 
   }
+
+
 }

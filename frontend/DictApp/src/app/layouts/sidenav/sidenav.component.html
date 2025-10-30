@@ -38,66 +38,63 @@
   </div>
 
   <ng-container *ngIf="(hasConnection$ | async); else emptyState">
-    <div class="flex flex-col w-full h-full bg-custom-surface border-r border-custom pt-4 p-4">
-      <div class="text-sm text-custom">
-        <div class="flex items-center gap-1.5">
-          <lucide-icon name="Database" class="w-4 h-4 text-blue-600" />
-          <span class="font-semibold">{{ database.name }}</span>
-        </div>
+  <div class="flex flex-col w-full h-full bg-custom-surface border-r border-custom pt-4 p-4 overflow-y-auto custom-scroll">
+    <div class="text-sm text-custom">
+      <div class="flex items-center gap-1.5">
+        <lucide-icon name="Database" class="w-4 h-4 text-blue-600" />
+        <span class="font-semibold">{{ activeDatabaseName }}</span>
+      </div>
 
-        <div class="ml-4 mt-2" *ngFor="let schema of database.schemas">
-          <div class="flex items-center gap-1">
-            <lucide-icon name="Folder" class="w-4 h-4 text-yellow-600" />
-            <span>{{ schema.name | translate }}</span>
+      <div class="ml-4 mt-2">
+        <div class="flex items-center gap-1">
+          <lucide-icon name="Folder" class="w-4 h-4 text-yellow-600" />
+          <span>public</span> </div>
+
+        <div class="ml-4" *ngFor="let category of categories">
+          <div
+            class="flex items-center justify-between gap-2 cursor-pointer py-1 hover:bg-custom-surface rounded px-2"
+            (click)="category.isOpen = !category.isOpen"
+          >
+            <div class="flex items-center gap-2">
+              <lucide-icon
+                name="ChevronRight"
+                [ngClass]="{ 'rotate-90': category.isOpen }"
+                class="w-4 h-4 transition-transform"
+              />
+              <lucide-icon
+                [name]="category.icon"
+                class="w-4 h-4"
+                [ngClass]="category.iconColor"
+              />
+              <span class="font-medium">{{ category.name | translate }}</span>
+            </div>
+            <span class="text-xs bg-gray-200 text-gray-600 rounded-full px-2">
+              {{ category.count }}
+            </span>
           </div>
 
-          <div class="ml-4" *ngFor="let category of schema.categories">
+          <div *ngIf="category.isOpen" class="ml-6">
             <div
-              class="flex items-center justify-between gap-2 cursor-pointer py-1 hover:bg-custom-surface rounded px-2"
-              (click)="category.isOpen = !category.isOpen"
+              *ngFor="let item of category.items"
+              class="flex items-start gap-2 py-1 px-2 rounded bg-label-hover cursor-pointer"
             >
-              <div class="flex items-center gap-2">
-                <lucide-icon
-                  name="ChevronRight"
-                  [ngClass]="{ 'rotate-90': category.isOpen }"
-                  class="w-4 h-4 transition-transform"
-                />
-                <lucide-icon
-                  name="Folder"
-                  class="w-4 h-4"
-                  [ngClass]="{
-                    'text-blue-600': category.name === 'SIDENAV.tables',
-                    'text-green-600': category.name === 'SIDENAV.views',
-                    'text-purple-600': category.name === 'SIDENAV.storedProcedures',
-                    'text-orange-600': category.name === 'SIDENAV.functions'
-                  }"
-                />
-                <span class="font-medium">{{ category.name | translate }}</span>
-              </div>
-              <span class="text-xs bg-gray-200 text-gray-600 rounded-full px-2">
-                {{ category.count }}
-              </span>
-            </div>
-
-            <div *ngIf="category.isOpen" class="ml-6">
-              <div
-                *ngFor="let item of category.items"
-                class="flex items-start gap-2 py-1 px-2 rounded bg-label-hover cursor-pointer"
-              >
-                <lucide-icon name="Table" class="w-4 h-4 text-blue-600 mt-1" />
-                <div>
-                  <div class="font-medium text-muted">{{ item.name }}</div>
-                  <div class="text-xs text-muted truncate w-60">
-                    {{ item.description | translate }}
-                  </div>
+              <lucide-icon name="Table" class="w-4 h-4 text-blue-600 mt-1" /> 
+              <div>
+                <div class="font-medium text-muted">{{ item.name }}</div>
+                <div class="text-xs text-muted truncate w-60">
+                  {{ item.description | translate }}
                 </div>
               </div>
+            </div>
+            <div *ngIf="category.count === 0" class="text-xs text-muted italic px-2 py-1">
+              No hay {{ category.name | translate | lowercase }}
             </div>
           </div>
         </div>
       </div>
     </div>
-  </ng-container>
+  </div>
+</ng-container>
 
   <ng-template #emptyState>
     <div class="flex-1 flex items-center justify-center px-6">

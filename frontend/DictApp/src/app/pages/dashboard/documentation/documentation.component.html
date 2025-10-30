@@ -1,128 +1,51 @@
-<div class="flex flex-col gap-4 p-4 border border-custom rounded-lg bg-custom-surface shadow-sm text-custom">
-  <div class="flex items-start gap-3">
-    <lucide-icon name="Database" class="w-6 h-6 text-blue-600"></lucide-icon>
-    <div>
-      <h1 class="text-lg font-semibold">Documentación de la base de datos</h1>
-    </div>
-  </div>
+<div *ngIf="!isLoading && !errorMessage && metadata" class="flex flex-col gap-4">
+  <div class="p-4 border border-custom rounded-lg bg-custom-surface shadow-sm text-custom">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+      <div class="flex flex-col gap-6">
+        <section>
+          <h2 class="font-semibold mb-1">Descripción de la base de datos</h2>
+          <p class="text-sm text-muted">
+            {{ metadata.description || 'Descripción general de la conexión.' }}
+          </p>
+        </section>
+      </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-    <div class="flex flex-col gap-6">
-      <section>
-        <h2 class="font-semibold mb-1">Descripción de la base de datos</h2>
-        <p class="text-sm text-muted">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo laborum magni nemo earum, aperiam neque velit nesciunt doloribus itaque explicabo recusandae eum, 
-          eos veritatis sint fugit reprehenderit dolores facilis praesentium?
-        </p>
-      </section>
-
-      <section>
-        <h2 class="font-semibold mb-1">Objeto</h2>
-        <p class="text-sm text-muted">
-          Base de datos de muestras para el aprendizaje de SQL y conceptos de base de datos
-        </p>
-      </section>
-
-      <section>
-        <h2 class="font-semibold mb-1">Notas adicionales</h2>
-        <p class="text-sm text-muted">
-          Esta base de datos incluye clientes, pedidos, productos, proveedores e información de los empleados.
-        </p>
-      </section>
-    </div>
-
-    <div class="flex flex-col gap-4">
-      <div class="border border-custom rounded-lg p-4 bg-custom-surface">
-        <h3 class="font-semibold mb-3">Metadatos de la base de datos</h3>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
-          <div>
-            <div class="text-muted">Tipo de base de datos:</div>
-            <div class="font-medium">SQL Server</div>
-          </div>
-          <div>
-            <div class="text-muted">Versión:</div>
-            <div class="font-medium">1.0</div>
-          </div>
-          <div class="flex items-center gap-2">
-            <lucide-icon name="User" class="w-4 h-4 text-muted"></lucide-icon>
+      <div class="flex flex-col gap-4">
+        <div class="border border-custom rounded-lg p-4 bg-custom-surface">
+          <h3 class="font-semibold mb-3">Metadatos de la base de datos</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
             <div>
-              <div class="text-muted">Autor:</div>
-              <div class="font-medium">Equipo de base de datos</div>
+              <div class="text-muted">Tipo de base de datos:</div>
+              <div class="font-medium capitalize">{{ metadata.dialect || 'Desconocido' }}</div>
             </div>
-          </div>
-          <div class="flex items-center gap-2">
-            <lucide-icon name="Calendar" class="w-4 h-4 text-muted"></lucide-icon>
-            <div>
-              <div class="text-muted">Última actualización:</div>
-              <div class="font-medium">2025-08-14</div>
+            </div>
+        </div>
+
+        <div class="border border-custom rounded-lg p-4 bg-custom-surface">
+          <h3 class="font-semibold mb-4">Estadísticas de la base de datos</h3>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+            <div class="bg-custom-surface rounded-lg border border-custom p-3">
+              <div class="text-2xl font-semibold text-blue-600">{{ tableCount | number }}</div>
+              <div class="text-xs text-muted mt-1">Tablas</div>
+            </div>
+            <div class="bg-custom-surface rounded-lg border border-custom p-3">
+              <div class="text-2xl font-semibold text-green-600">{{ columnCount | number }}</div>
+              <div class="text-xs text-muted mt-1">Columnas</div>
+            </div>
+            <div class="bg-custom-surface rounded-lg border border-custom p-3 opacity-50">
+              <div class="text-2xl font-semibold text-purple-600">0</div>
+              <div class="text-xs text-muted mt-1">Vistas</div>
+            </div>
+            <div class="bg-custom-surface rounded-lg border border-custom p-3 opacity-50">
+              <div class="text-2xl font-semibold text-orange-600">0</div>
+              <div class="text-xs text-muted mt-1">Procedimientos</div>
             </div>
           </div>
         </div>
-      </div>
-
-      <div class="border border-custom rounded-lg p-4 bg-custom-surface">
-        <h3 class="font-semibold mb-4">Estadísticas de la base de datos</h3>
-
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-          <div class="bg-custom-surface rounded-lg border border-custom p-3">
-            <div class="text-2xl font-semibold text-blue-600">4</div>
-            <div class="text-xs text-muted mt-1">Cuadros</div>
-          </div>
-          <div class="bg-custom-surface rounded-lg border border-custom p-3">
-            <div class="text-2xl font-semibold text-green-600">52</div>
-            <div class="text-xs text-muted mt-1">Columnas</div>
-          </div>
-          <div class="bg-custom-surface rounded-lg border border-custom p-3">
-            <div class="text-2xl font-semibold text-purple-600">2</div>
-            <div class="text-xs text-muted mt-1">Vistas</div>
-          </div>
-          <div class="bg-custom-surface rounded-lg border border-custom p-3">
-            <div class="text-2xl font-semibold text-orange-600">2</div>
-            <div class="text-xs text-muted mt-1">Procedimientos</div>
-          </div>
         </div>
-      </div>
-
-      <div class="flex flex-col gap-3">
-        <button type="button"
-          class="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg border border-custom bg-custom-surface hover:bg-[var(--color-background-label)] transition">
-          <lucide-icon name="Download" class="w-4 h-4"></lucide-icon>
-          <span>Documentación sobre la exportación (PDF)</span>
-        </button>
-
-        <button type="button"
-          class="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg border border-custom bg-custom-surface hover:bg-[var(--color-background-label)] transition">
-          <lucide-icon name="FileText" class="w-4 h-4"></lucide-icon>
-          <span>Exportar Diccionario de Datos (Excel)</span>
-        </button>
-      </div>
     </div>
   </div>
-</div>
-
-<div class="flex-1 min-h-0 overflow-auto">
-  <div class="text-custom">
-    <ng-container *ngIf="activeTab$ | async as activeTab">
-      <div class="flex flex-wrap bg-custom-background p-1 rounded-t-lg w-fit mt-3">
-        <a routerLink="tables"
-          routerLinkActive="bg-custom-surface border-custom shadow-sm"
-          class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg">
-          <lucide-icon name="FileText" class="w-4 h-4"></lucide-icon>
-          <span>Tables</span>
-        </a>
-
-        <a routerLink="columns"
-          routerLinkActive="bg-custom-surface border-custom shadow-sm"
-          class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg">
-          <lucide-icon name="FileText" class="w-4 h-4"></lucide-icon>
-          <span>Columns</span>
-        </a>
-      </div>
-    </ng-container>
-
-    <div class="pt-4 bg-custom-surface h-full overflow-auto">
-        <router-outlet></router-outlet>
+  
+  <div class="flex-1 min-h-0 overflow-auto">
     </div>
-  </div>
 </div>

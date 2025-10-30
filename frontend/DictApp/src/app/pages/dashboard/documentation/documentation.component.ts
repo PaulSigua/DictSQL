@@ -5,6 +5,7 @@ import { TabManagerService } from '../../../services/tab/tab-manager.service';
 import { UiBusService } from '../../../services/ui/ui-bus.service';
 import { MetadataResponse } from '../../../interfaces/connection.interface';
 import { ConnectionService } from '../../../services/connection/connection.service';
+import { MetadataApiResponse } from '../../../interfaces/metadata.interface';
 
 @Component({
   selector: 'app-documentation',
@@ -15,15 +16,12 @@ import { ConnectionService } from '../../../services/connection/connection.servi
 export class DocumentationComponent {
 activeTab$: Observable<DbTab | null>;
 
-  // 4. Propiedades para los datos, carga y error
-  metadata: MetadataResponse | null = null;
-  isLoading = true;
-  errorMessage: string | null = null;
+  public metadata: MetadataApiResponse | null = null;
+  public isLoading = true;
+  public errorMessage: string | null = null;
   
-  // 5. Inyectamos los servicios
   private tabService = inject(TabManagerService);
   private connectionService = inject(ConnectionService);
-  // private ui = inject(UiBusService); // (No se está usando, se puede quitar si no se usa)
 
   constructor() {
     this.activeTab$ = this.tabService.tabs$.pipe(
@@ -31,29 +29,40 @@ activeTab$: Observable<DbTab | null>;
     );
   }
 
-  // 6. ngOnInit para cargar los datos
   ngOnInit(): void {
     this.activeTab$.pipe(
-      // Nos aseguramos de que el tab no sea nulo
       filter((tab): tab is DbTab => tab !== null), 
-      // Usamos switchMap para cambiar a la llamada de la API
       switchMap(activeTab => {
         this.isLoading = true;
         this.errorMessage = null;
-        // 7. Llamamos al servicio con el ID de la pestaña activa
+
+        if (activeTab.metadata) {
+          return of(activeTab.metadata);
+        }
+
         return this.connectionService.getMetadata(activeTab.id).pipe(
-          // Manejamos errores de la API
           catchError(err => {
             this.errorMessage = err.error?.detail || 'No se pudo cargar la metadata.';
-            return of(null); // Devolvemos null para que el stream continúe
+            return of(null);
           })
         );
       })
     ).subscribe(response => {
       this.isLoading = false;
-      if (response) {
+      if (response && response.status === 'success') {
         this.metadata = response;
+        this.tabService.updateActiveTabData({ metadata: response });
+      } else if (response) {
+        this.errorMessage = response.detail || 'Error al procesar la metadata.';
       }
     });
+  }
+
+  get tableCount(): number {
+    return this.metadata?.tables_count ?? 0;
+  }
+
+  get columnCount(): number {
+    return this.metadata?.metadata.reduce((acc, table) => acc + table.columns.length, 0) ?? 0;
   }
 }
