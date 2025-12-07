@@ -3,38 +3,58 @@ import fs from 'node:fs/promises'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { ipcMain } from 'electron'
 import { PostgresAdapter } from './lib/adapters/postgres-adapter'
 import { DbConnectionConfig } from '../shared/types'
 import { MarkdownGenerator } from './lib/markdown-generator';
 import { TableDefinition } from '../shared/types';
+import { SqliteAdapter } from './lib/adapters/sqlite-adapter'
+import { MysqlAdapter } from './lib/adapters/mysql-adapter'
+import { MssqlAdapter } from './lib/adapters/mssql-adapter'
 
 // --- IPC Handlers para Base de Datos ---
 ipcMain.handle('db:connect', async (_event, config: DbConnectionConfig) => {
-  console.log('Intentando conectar a:', config.database);
+  console.log('Intentando conectar a:', config.database)
 
   try {
-    let adapter;
+    let adapter
 
     // Factory simple: elegimos el adaptador según el tipo
     if (config.type === 'postgres') {
       adapter = new PostgresAdapter(config);
+    } else if (config.type === 'sqlite') {
+      adapter = new SqliteAdapter(config)
+    } else if (config.type === 'mysql') {
+      adapter = new MysqlAdapter(config)
+    } else if (config.type === 'mssql') {
+      adapter = new MssqlAdapter(config)
     } else {
-      throw new Error(`Tipo de base de datos no soportado: ${config.type}`);
+      throw new Error(`Tipo de base de datos no soportado: ${config.type}`)
     }
 
-    await adapter.connect();
-    const schema = await adapter.getSchema();
-    await adapter.disconnect(); // Por ahora desconectamos al terminar de leer
+    await adapter.connect()
+    const schema = await adapter.getSchema()
+    await adapter.disconnect() // Por ahora desconectamos al terminar de leer
 
-    console.log(`Esquema obtenido: ${schema.length} tablas encontradas.`);
-    return { success: true, data: schema };
+    console.log(`Esquema obtenido: ${schema.length} tablas encontradas.`)
+    return { success: true, data: schema }
 
   } catch (error: any) {
-    console.error('Error de conexión:', error);
-    return { success: false, error: error.message };
+    console.error('Error de conexión:', error)
+    return { success: false, error: error.message }
   }
-});
+})
+
+// IPC para seleccionar archivo DB (SQLite)
+ipcMain.handle('dialog:openFile', async () => {
+  const { canceled, filePaths } = await dialog.showOpenDialog({
+    title: 'Seleccionar archivo de Base de Datos',
+    properties: ['openFile'],
+    filters: [{ name: 'SQLite Database', extensions: ['db', 'sqlite', 'sqlite3'] }]
+  })
+  
+  if (canceled || filePaths.length === 0) return null
+  return filePaths[0]
+})
 
 // --- IPC Handlers para Archivos ---
 
@@ -44,17 +64,17 @@ ipcMain.handle('file:save', async (_event, content: string) => {
     title: 'Guardar Documentación',
     defaultPath: 'mi-proyecto.dictsql',
     filters: [{ name: 'DictSQL Project', extensions: ['dictsql', 'json'] }]
-  });
+  })
 
-  if (canceled || !filePath) return { success: false };
+  if (canceled || !filePath) return { success: false }
 
   try {
-    await fs.writeFile(filePath, content, 'utf-8');
-    return { success: true, filePath };
+    await fs.writeFile(filePath, content, 'utf-8')
+    return { success: true, filePath }
   } catch (error: any) {
-    return { success: false, error: error.message };
+    return { success: false, error: error.message }
   }
-});
+})
 
 // Abrir Proyecto
 ipcMain.handle('file:open', async () => {
@@ -62,17 +82,17 @@ ipcMain.handle('file:open', async () => {
     title: 'Abrir Proyecto',
     properties: ['openFile'],
     filters: [{ name: 'DictSQL Project', extensions: ['dictsql', 'json'] }]
-  });
+  })
 
-  if (canceled || filePaths.length === 0) return { success: false };
+  if (canceled || filePaths.length === 0) return { success: false }
 
   try {
-    const content = await fs.readFile(filePaths[0], 'utf-8');
-    return { success: true, data: JSON.parse(content), filePath: filePaths[0] };
+    const content = await fs.readFile(filePaths[0], 'utf-8')
+    return { success: true, data: JSON.parse(content), filePath: filePaths[0] }
   } catch (error: any) {
-    return { success: false, error: error.message };
+    return { success: false, error: error.message }
   }
-});
+})
 
 // Exportar a Markdown
 ipcMain.handle('file:export-markdown', async (_event, tables: TableDefinition[]) => {
@@ -80,23 +100,23 @@ ipcMain.handle('file:export-markdown', async (_event, tables: TableDefinition[])
     title: 'Exportar Documentación',
     defaultPath: 'documentacion-db.md',
     filters: [{ name: 'Markdown File', extensions: ['md'] }]
-  });
+  })
 
-  if (canceled || !filePath) return { success: false };
+  if (canceled || !filePath) return { success: false }
 
   try {
     // Generamos el string Markdown usando la clase que creamos
-    const markdownContent = MarkdownGenerator.generate(tables);
+    const markdownContent = MarkdownGenerator.generate(tables)
 
     // Escribimos el archivo
-    await fs.writeFile(filePath, markdownContent, 'utf-8');
+    await fs.writeFile(filePath, markdownContent, 'utf-8')
 
-    return { success: true, filePath };
+    return { success: true, filePath }
   } catch (error: any) {
-    console.error(error);
-    return { success: false, error: error.message };
+    console.error(error)
+    return { success: false, error: error.message }
   }
-});
+})
 
 function createWindow(): void {
   // Create the browser window.

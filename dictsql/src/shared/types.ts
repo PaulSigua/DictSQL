@@ -1,5 +1,5 @@
 // define que tipos de bases de datos soportamos
-export type DbType = 'postgres' | 'mysql' | 'sqlite';
+export type DbType = 'postgres' | 'mysql' | 'sqlite' | 'mssql';
 
 // configuracion de conexion del usuario
 export interface DbConnectionConfig {

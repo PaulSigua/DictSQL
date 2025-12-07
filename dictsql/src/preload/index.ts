@@ -8,8 +8,8 @@ const api = {
   saveProject: (content: string) => ipcRenderer.invoke('file:save', content),
   openProject: () => ipcRenderer.invoke('file:open'),
   exportMarkdown: (tables: TableDefinition[]) => ipcRenderer.invoke('file:export-markdown', tables),
+  selectDatabaseFile: () => ipcRenderer.invoke('dialog:openFile')
 }
-
 
 if (process.contextIsolated) {
   try {

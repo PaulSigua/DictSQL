@@ -9,6 +9,7 @@ export interface ICustomAPI {
   saveProject: (content: string) => Promise<{ success: boolean; filePath?: string; error?: string }>;
   openProject: () => Promise<{ success: boolean; data?: any; filePath?: string; error?: string }>;
   exportMarkdown: (tables: TableDefinition[]) => Promise<{ success: boolean; filePath?: string; error?: string }>;
+  selectDatabaseFile: () => Promise<string | null>;
 }
 
 declare global {
