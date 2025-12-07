@@ -1,4 +1,5 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
+import fs from 'node:fs/promises'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -29,6 +30,44 @@ ipcMain.handle('db:connect', async (_event, config: DbConnectionConfig) => {
 
   } catch (error: any) {
     console.error('Error de conexión:', error);
+    return { success: false, error: error.message };
+  }
+});
+
+// --- IPC Handlers para Archivos ---
+
+// Guardar Proyecto
+ipcMain.handle('file:save', async (_event, content: string) => {
+  const { canceled, filePath } = await dialog.showSaveDialog({
+    title: 'Guardar Documentación',
+    defaultPath: 'mi-proyecto.dictsql',
+    filters: [{ name: 'DictSQL Project', extensions: ['dictsql', 'json'] }]
+  });
+
+  if (canceled || !filePath) return { success: false };
+
+  try {
+    await fs.writeFile(filePath, content, 'utf-8');
+    return { success: true, filePath };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+});
+
+// Abrir Proyecto
+ipcMain.handle('file:open', async () => {
+  const { canceled, filePaths } = await dialog.showOpenDialog({
+    title: 'Abrir Proyecto',
+    properties: ['openFile'],
+    filters: [{ name: 'DictSQL Project', extensions: ['dictsql', 'json'] }]
+  });
+
+  if (canceled || filePaths.length === 0) return { success: false };
+
+  try {
+    const content = await fs.readFile(filePaths[0], 'utf-8');
+    return { success: true, data: JSON.parse(content), filePath: filePaths[0] };
+  } catch (error: any) {
     return { success: false, error: error.message };
   }
 });

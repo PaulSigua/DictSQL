@@ -4,7 +4,9 @@ import { DbConnectionConfig } from '../shared/types'
 
 // Custom APIs for renderer
 const api = {
-  connectDb: (config: DbConnectionConfig) => ipcRenderer.invoke('db:connect', config)
+  connectDb: (config: DbConnectionConfig) => ipcRenderer.invoke('db:connect', config),
+  saveProject: (content: string) => ipcRenderer.invoke('file:save', content),
+  openProject: () => ipcRenderer.invoke('file:open')
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

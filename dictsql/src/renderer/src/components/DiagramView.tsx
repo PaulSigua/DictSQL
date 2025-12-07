@@ -1,9 +1,8 @@
 import { useMemo, useEffect } from 'react';
 import { ReactFlow, Background, Controls, useNodesState, useEdgesState, Node, Edge } from '@xyflow/react';
-import '@xyflow/react/dist/style.css'; // ¡Importante! Estilos base
-
+import '@xyflow/react/dist/style.css'; // estilos base
 import { TableDefinition } from '../../../shared/types';
-import { TableNode } from './diagram/TableNode'; // Nuestro nodo personalizado
+import { TableNode } from './diagram/TableNode'; // nodo personalizado
 import { getLayoutedElements } from '../utils/layout';
 
 // Registramos nuestros tipos de nodos personalizados
@@ -12,25 +11,26 @@ const nodeTypes = {
 };
 
 interface DiagramViewProps {
-  tables: TableDefinition[];
+    tables: TableDefinition[];
+    onNodeClick: (event: React.MouseEvent, node: Node) => void;
 }
 
-export function DiagramView({ tables }: DiagramViewProps) {
+export function DiagramView({ tables, onNodeClick }: DiagramViewProps ) {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
   useEffect(() => {
     if (tables.length === 0) return;
 
-    // 1. Transformar Tablas -> Nodos
+    // transformar Tablas en Nodos
     const initialNodes: Node[] = tables.map((table) => ({
       id: table.name,
-      type: 'table', // Debe coincidir con 'nodeTypes'
-      position: { x: 0, y: 0 }, // El layout lo arreglará después
+      type: 'table',
+      position: { x: 0, y: 0 },
       data: { tableData: table },
     }));
 
-    // 2. Transformar FKs -> Aristas (Edges)
+    // transformar FKs en Aristas (Edges)
     const initialEdges: Edge[] = [];
     tables.forEach((table) => {
       table.foreignKeys.forEach((fk) => {
@@ -44,7 +44,7 @@ export function DiagramView({ tables }: DiagramViewProps) {
       });
     });
 
-    // 3. Aplicar Auto-Layout
+    // aplicar Auto-Layout
     const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
       initialNodes,
       initialEdges
@@ -55,14 +55,15 @@ export function DiagramView({ tables }: DiagramViewProps) {
   }, [tables, setNodes, setEdges]);
 
   return (
-    <div style={{ width: '100%', height: '100vh', background: '#222' }}>
+    <div style={{ width: '100%', height: '100%', background: '#222' }}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         nodeTypes={nodeTypes}
-        fitView // Centrar el diagrama al inicio
+        onNodeClick={onNodeClick}
+        fitView
       >
         <Background color="#aaa" gap={16} />
         <Controls />

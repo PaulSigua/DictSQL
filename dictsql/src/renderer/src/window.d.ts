@@ -6,6 +6,8 @@ export interface IElectronAPI {
 
 export interface ICustomAPI {
   connectDb: (config: DbConnectionConfig) => Promise<{ success: boolean; data?: DatabaseSchema; error?: string }>;
+  saveProject: (content: string) => Promise<{ success: boolean; filePath?: string; error?: string }>;
+  openProject: () => Promise<{ success: boolean; data?: any; filePath?: string; error?: string }>;
 }
 
 declare global {
