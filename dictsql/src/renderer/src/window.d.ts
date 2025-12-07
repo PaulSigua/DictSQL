@@ -10,6 +10,8 @@ export interface ICustomAPI {
   openProject: () => Promise<{ success: boolean; data?: any; filePath?: string; error?: string }>;
   exportMarkdown: (tables: TableDefinition[]) => Promise<{ success: boolean; filePath?: string; error?: string }>;
   selectDatabaseFile: () => Promise<string | null>;
+  exportHtml: (tables: TableDefinition[]) => Promise<{ success: boolean; filePath?: string; error?: string }>;
+  exportPdf: (tables: TableDefinition[]) => Promise<{ success: boolean; filePath?: string; error?: string }>;
 }
 
 declare global {

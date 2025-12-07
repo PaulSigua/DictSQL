@@ -10,6 +10,7 @@ import { TableDefinition } from '../shared/types';
 import { SqliteAdapter } from './lib/adapters/sqlite-adapter'
 import { MysqlAdapter } from './lib/adapters/mysql-adapter'
 import { MssqlAdapter } from './lib/adapters/mssql-adapter'
+import { HtmlGenerator } from './lib/html-generator';
 
 // --- IPC Handlers para Base de Datos ---
 ipcMain.handle('db:connect', async (_event, config: DbConnectionConfig) => {
@@ -117,6 +118,70 @@ ipcMain.handle('file:export-markdown', async (_event, tables: TableDefinition[])
     return { success: false, error: error.message }
   }
 })
+
+// ---------------------------------------------------------
+// 4. HANDLERS: EXPORTAR HTML Y PDF
+// ---------------------------------------------------------
+
+// Exportar HTML
+ipcMain.handle('file:export-html', async (_event, tables: TableDefinition[]) => {
+  const { canceled, filePath } = await dialog.showSaveDialog({
+    title: 'Exportar a HTML',
+    defaultPath: 'documentacion.html',
+    filters: [{ name: 'HTML Webpage', extensions: ['html'] }]
+  });
+
+  if (canceled || !filePath) return { success: false };
+
+  try {
+    const htmlContent = HtmlGenerator.generate(tables);
+    await fs.writeFile(filePath, htmlContent, 'utf-8');
+    return { success: true, filePath };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+});
+
+// Exportar PDF (Truco: Renderizar HTML en ventana oculta)
+ipcMain.handle('file:export-pdf', async (_event, tables: TableDefinition[]) => {
+  const { canceled, filePath } = await dialog.showSaveDialog({
+    title: 'Exportar a PDF',
+    defaultPath: 'documentacion.pdf',
+    filters: [{ name: 'PDF Document', extensions: ['pdf'] }]
+  });
+
+  if (canceled || !filePath) return { success: false };
+
+  // 1. Generamos el HTML
+  const htmlContent = HtmlGenerator.generate(tables);
+
+  // 2. Creamos una ventana oculta temporal
+  const printWindow = new BrowserWindow({ show: false });
+
+  try {
+    // 3. Cargamos el HTML (usando data URI para no crear archivos temporales)
+    const htmlBase64 = Buffer.from(htmlContent).toString('base64');
+    await printWindow.loadURL(`data:text/html;charset=utf-8;base64,${htmlBase64}`);
+
+    // 4. Imprimimos a PDF
+    const pdfData = await printWindow.webContents.printToPDF({
+      printBackground: true, // Imprimir colores de fondo
+      pageSize: 'A4',
+      margins: { top: 1, bottom: 1, left: 1, right: 1 } // Márgenes en cm (aprox)
+    });
+
+    // 5. Guardamos el archivo
+    await fs.writeFile(filePath, pdfData);
+
+    printWindow.close(); // Limpieza
+    return { success: true, filePath };
+
+  } catch (error: any) {
+    printWindow.close();
+    console.error(error);
+    return { success: false, error: error.message };
+  }
+});
 
 function createWindow(): void {
   // Create the browser window.

@@ -2,63 +2,57 @@ interface TopBarProps {
   onSave: () => void;
   onOpen: () => void;
   onNew: () => void;
-  onExport: () => void;
+  // Cambiamos onExport simple por 3 funciones específicas
+  onExportMarkdown: () => void;
+  onExportHtml: () => void;
+  onExportPdf: () => void;
   onSearch: (term: string) => void;
   projectName?: string;
 }
 
-export function TopBar({ onSave, onOpen, onNew, onExport, onSearch, projectName }: TopBarProps) {
-  const btnStyle = {
-    background: '#333',
-    border: '1px solid #555',
-    color: 'white',
-    padding: '5px 12px',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '0.85rem'
-  };
+export function TopBar({ 
+  onSave, onOpen, onNew, 
+  onExportMarkdown, onExportHtml, onExportPdf, 
+  onSearch, projectName 
+}: TopBarProps) {
+  
+  const btnClass = "bg-surface border border-border hover:bg-gray-700 text-white px-3 py-1 rounded text-sm transition-colors cursor-pointer";
+  // botones de exportacion
+  const exportBtnClass = "bg-surface border border-green-800 text-green-400 hover:bg-green-900 px-2 py-1 rounded text-xs transition-colors cursor-pointer ml-1";
 
   return (
-    <div style={{
-      height: '40px',
-      background: '#1a1a1a',
-      borderBottom: '1px solid #333',
-      display: 'flex',
-      alignItems: 'center',
-      padding: '0 15px',
-      gap: '10px'
-    }}>
-      <div style={{ fontWeight: 'bold', color: '#007bff', marginRight: '10px' }}>
-        DictSQL
+    <div className="h-10 bg-background border-b border-border flex items-center px-4 gap-2 select-none">
+      
+      <div className="font-bold text-blue-500 mr-2 flex items-center gap-2">
+        <span>🗄️</span> DictSQL
       </div>
       
-      <input 
-        type="text" 
-        placeholder="🔍 Buscar tabla..." 
-        onChange={(e) => onSearch(e.target.value)}
-        style={{
-          background: '#252526',
-          border: '1px solid #555',
-          color: '#eee',
-          padding: '4px 8px',
-          borderRadius: '4px',
-          marginRight: '15px',
-          width: '200px'
-        }}
-      />
+      <div className="relative">
+        <input 
+          type="text" 
+          placeholder="🔍 Buscar..." 
+          onChange={(e) => onSearch(e.target.value)}
+          className="bg-surface border border-border text-gray-200 text-sm rounded px-2 py-1 w-40 focus:outline-none focus:border-blue-500 transition-all"
+        />
+      </div>
 
-      <button style={btnStyle} onClick={onNew}>Nuevo</button>
-      <button style={btnStyle} onClick={onOpen}>Abrir</button>
-      <button style={btnStyle} onClick={onSave}>Guardar</button>
+      <div className="flex-1"></div>
 
-      <div style={{ width: '1px', height: '20px', background: '#555', margin: '0 5px' }}></div>
+      <button className={btnClass} onClick={onNew}>Nuevo</button>
+      <button className={btnClass} onClick={onOpen}>Abrir</button>
+      <button className={btnClass} onClick={onSave}>Guardar</button>
+
+      <div className="w-px h-5 bg-border mx-2"></div>
       
-      <button style={{...btnStyle, background: '#2e7d32'}} onClick={onExport}>
-        Exportar MD
-      </button>
+      <div className="flex items-center">
+        <span className="text-xs text-gray-500 mr-2">Exportar:</span>
+        <button className={exportBtnClass} onClick={onExportMarkdown} title="Markdown">MD</button>
+        <button className={exportBtnClass} onClick={onExportHtml} title="HTML Web">HTML</button>
+        <button className={exportBtnClass} onClick={onExportPdf} title="PDF Document">PDF</button>
+      </div>
 
       {projectName && (
-        <span style={{ marginLeft: 'auto', color: '#666', fontSize: '0.8rem' }}>
+        <span className="ml-4 text-xs text-gray-500 truncate max-w-[150px]" title={projectName}>
           {projectName}
         </span>
       )}

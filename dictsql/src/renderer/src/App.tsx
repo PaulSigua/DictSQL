@@ -61,15 +61,30 @@ function App(): React.JSX.Element {
   };
   const selectedTable = tables.find(t => t.name === selectedTableName) || null;
 
-  const handleExport = async () => {
-    if (tables.length === 0) return alert("No hay datos para exportar.");
-    
+const handleExportMarkdown = async () => {
+    if (tables.length === 0) return alert("Sin datos");
     const result = await window.api.exportMarkdown(tables);
-    if (result.success) {
-      alert(`Exportación exitosa en: ${result.filePath}`);
-    } else if (result.error) {
-      alert(`Error: ${result.error}`);
-    }
+    if (result.success) alert(`Guardado en: ${result.filePath}`);
+    else if (result.error) alert(`Error: ${result.error}`);
+  };
+
+  const handleExportHtml = async () => {
+    if (tables.length === 0) return alert("Sin datos");
+    const result = await window.api.exportHtml(tables);
+    if (result.success) alert(`Guardado en: ${result.filePath}`);
+    else if (result.error) alert(`Error: ${result.error}`);
+  };
+
+  const handleExportPdf = async () => {
+    if (tables.length === 0) return alert("Sin datos");
+    // Aviso de "Cargando" porque el PDF puede tardar 1 o 2 segundos
+    const toastId = setTimeout(() => alert("Generando PDF... por favor espera"), 500); // Simple feedback
+    
+    const result = await window.api.exportPdf(tables);
+    clearTimeout(toastId); // Limpiamos si fue muy rápido
+    
+    if (result.success) alert(`PDF generado en: ${result.filePath}`);
+    else if (result.error) alert(`Error: ${result.error}`);
   };
   
   const filteredTables = tables.filter(table => 
@@ -83,7 +98,9 @@ return (
         onSave={handleSave} 
         onOpen={handleOpen} 
         onNew={handleNew}
-        onExport={handleExport}
+        onExportMarkdown={handleExportMarkdown}
+        onExportHtml={handleExportHtml}
+        onExportPdf={handleExportPdf}
         onSearch={setSearchTerm}
         projectName={currentFilePath}
       />
