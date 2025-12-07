@@ -15,36 +15,47 @@ interface DiagramViewProps {
     onNodeClick: (event: React.MouseEvent, node: Node) => void;
 }
 
-export function DiagramView({ tables, onNodeClick }: DiagramViewProps ) {
+export function DiagramView({ tables, onNodeClick }: DiagramViewProps) {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
   useEffect(() => {
-    if (tables.length === 0) return;
+    if (tables.length === 0) {
+      setNodes([]);
+      setEdges([]);
+      return;
+    }
 
-    // transformar Tablas en Nodos
+    // crear Set de nombres visibles para búsqueda rápida (O(1))
+    // Esto nos sirve para saber si el "target" de una relación existe actualmente
+    const visibleTableNames = new Set(tables.map(t => t.name));
+
+    // transformar Tablas a Nodos
     const initialNodes: Node[] = tables.map((table) => ({
       id: table.name,
-      type: 'table',
+      type: 'table', 
       position: { x: 0, y: 0 },
       data: { tableData: table },
     }));
 
-    // transformar FKs en Aristas (Edges)
+    // transformar FKs a Aristas (CON FILTRO DE SEGURIDAD)
     const initialEdges: Edge[] = [];
     tables.forEach((table) => {
       table.foreignKeys.forEach((fk) => {
-        initialEdges.push({
-          id: `${table.name}-${fk.constraintName}`,
-          source: table.name,        // Tabla Origen (donde está la FK)
-          target: fk.targetTable,    // Tabla Destino
-          animated: true,            // Línea animada (opcional)
-          style: { stroke: '#fff' }, // Color de la línea
-        });
+        // LÓGICA CLAVE: Solo crear la línea si la tabla destino TAMBIÉN está visible
+        if (visibleTableNames.has(fk.targetTable)) {
+          initialEdges.push({
+            id: `${table.name}-${fk.constraintName}`,
+            source: table.name,
+            target: fk.targetTable,
+            animated: true,
+            style: { stroke: '#555' },
+          });
+        }
       });
     });
 
-    // aplicar Auto-Layout
+    // layout
     const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
       initialNodes,
       initialEdges
@@ -52,7 +63,7 @@ export function DiagramView({ tables, onNodeClick }: DiagramViewProps ) {
 
     setNodes(layoutedNodes);
     setEdges(layoutedEdges);
-  }, [tables, setNodes, setEdges]);
+  }, [tables, setNodes, setEdges]); // Se ejecuta cada vez que 'tables' cambia (al filtrar)
 
   return (
     <div style={{ width: '100%', height: '100%', background: '#222' }}>
@@ -63,7 +74,6 @@ export function DiagramView({ tables, onNodeClick }: DiagramViewProps ) {
         onEdgesChange={onEdgesChange}
         nodeTypes={nodeTypes}
         onNodeClick={onNodeClick}
-        fitView
       >
         <Background color="#aaa" gap={16} />
         <Controls />

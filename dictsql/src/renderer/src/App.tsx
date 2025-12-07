@@ -11,6 +11,7 @@ function App(): React.JSX.Element {
   const [currentFilePath, setCurrentFilePath] = useState<string | undefined>(undefined);
 
   // --- Lógica de Archivos ---
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
   const handleSave = async () => {
     if (tables.length === 0) return alert("No hay nada que guardar");
@@ -71,25 +72,31 @@ function App(): React.JSX.Element {
     }
   };
   
-  return (
-    <div className="app-container" style={{ width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column' }}>
+  const filteredTables = tables.filter(table => 
+    table.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  
+return (
+    <div className="app-container" style={{ width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', background: '#1a1a1a', color: '#fff' }}>
       
-      {/* 1. BARRA SUPERIOR */}
       <TopBar 
         onSave={handleSave} 
         onOpen={handleOpen} 
         onNew={handleNew}
         onExport={handleExport}
+        onSearch={setSearchTerm}
         projectName={currentFilePath}
       />
 
-      {/* 2. AREA DE TRABAJO */}
       <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
         <div style={{ flex: 1, position: 'relative' }}>
           {tables.length === 0 ? (
             <ConnectForm onSuccess={handleConnectSuccess} />
           ) : (
-            <DiagramView tables={tables} onNodeClick={handleNodeClick} />
+            <DiagramView 
+              tables={filteredTables} // lista filtrada
+              onNodeClick={handleNodeClick} 
+            />
           )}
         </div>
 

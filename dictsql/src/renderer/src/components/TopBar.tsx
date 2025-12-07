@@ -2,12 +2,12 @@ interface TopBarProps {
   onSave: () => void;
   onOpen: () => void;
   onNew: () => void;
-  onExport: () => void; // <--- Esto estaba bien definido en la interfaz
+  onExport: () => void;
+  onSearch: (term: string) => void;
   projectName?: string;
 }
 
-
-export function TopBar({ onSave, onOpen, onNew, onExport, projectName }: TopBarProps) {
+export function TopBar({ onSave, onOpen, onNew, onExport, onSearch, projectName }: TopBarProps) {
   const btnStyle = {
     background: '#333',
     border: '1px solid #555',
@@ -32,9 +32,24 @@ export function TopBar({ onSave, onOpen, onNew, onExport, projectName }: TopBarP
         DictSQL
       </div>
       
-      <button style={btnStyle} onClick={onNew}>Nuevo / Conectar</button>
-      <button style={btnStyle} onClick={onOpen}>Abrir Archivo</button>
-      <button style={btnStyle} onClick={onSave}>Guardar Proyecto</button>
+      <input 
+        type="text" 
+        placeholder="🔍 Buscar tabla..." 
+        onChange={(e) => onSearch(e.target.value)}
+        style={{
+          background: '#252526',
+          border: '1px solid #555',
+          color: '#eee',
+          padding: '4px 8px',
+          borderRadius: '4px',
+          marginRight: '15px',
+          width: '200px'
+        }}
+      />
+
+      <button style={btnStyle} onClick={onNew}>Nuevo</button>
+      <button style={btnStyle} onClick={onOpen}>Abrir</button>
+      <button style={btnStyle} onClick={onSave}>Guardar</button>
 
       <div style={{ width: '1px', height: '20px', background: '#555', margin: '0 5px' }}></div>
       
