@@ -1,17 +1,16 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import { DbConnectionConfig } from '../shared/types'
+import { DbConnectionConfig, TableDefinition } from '../shared/types'
 
 // Custom APIs for renderer
 const api = {
   connectDb: (config: DbConnectionConfig) => ipcRenderer.invoke('db:connect', config),
   saveProject: (content: string) => ipcRenderer.invoke('file:save', content),
-  openProject: () => ipcRenderer.invoke('file:open')
+  openProject: () => ipcRenderer.invoke('file:open'),
+  exportMarkdown: (tables: TableDefinition[]) => ipcRenderer.invoke('file:export-markdown', tables),
 }
 
-// Use `contextBridge` APIs to expose Electron APIs to
-// renderer only if context isolation is enabled, otherwise
-// just add to the DOM global.
+
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI)

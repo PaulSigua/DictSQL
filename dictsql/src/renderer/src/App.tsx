@@ -48,7 +48,6 @@ function App(): React.JSX.Element {
   const handleConnectSuccess = (data: TableDefinition[]) => setTables(data);
   const handleNodeClick = (_e: any, node: any) => setSelectedTableName(node.id);
   
-  // Copia tus funciones updateTableComment y updateColumnComment aquí...
   const updateTableComment = (tableName: string, comment: string) => {
       setTables(prev => prev.map(t => t.name === tableName ? { ...t, comment } : t));
   };
@@ -61,6 +60,17 @@ function App(): React.JSX.Element {
   };
   const selectedTable = tables.find(t => t.name === selectedTableName) || null;
 
+  const handleExport = async () => {
+    if (tables.length === 0) return alert("No hay datos para exportar.");
+    
+    const result = await window.api.exportMarkdown(tables);
+    if (result.success) {
+      alert(`Exportación exitosa en: ${result.filePath}`);
+    } else if (result.error) {
+      alert(`Error: ${result.error}`);
+    }
+  };
+  
   return (
     <div className="app-container" style={{ width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column' }}>
       
@@ -69,6 +79,7 @@ function App(): React.JSX.Element {
         onSave={handleSave} 
         onOpen={handleOpen} 
         onNew={handleNew}
+        onExport={handleExport}
         projectName={currentFilePath}
       />
 

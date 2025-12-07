@@ -6,6 +6,8 @@ import icon from '../../resources/icon.png?asset'
 import { ipcMain } from 'electron'
 import { PostgresAdapter } from './lib/adapters/postgres-adapter'
 import { DbConnectionConfig } from '../shared/types'
+import { MarkdownGenerator } from './lib/markdown-generator';
+import { TableDefinition } from '../shared/types';
 
 // --- IPC Handlers para Base de Datos ---
 ipcMain.handle('db:connect', async (_event, config: DbConnectionConfig) => {
@@ -68,6 +70,30 @@ ipcMain.handle('file:open', async () => {
     const content = await fs.readFile(filePaths[0], 'utf-8');
     return { success: true, data: JSON.parse(content), filePath: filePaths[0] };
   } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+});
+
+// Exportar a Markdown
+ipcMain.handle('file:export-markdown', async (_event, tables: TableDefinition[]) => {
+  const { canceled, filePath } = await dialog.showSaveDialog({
+    title: 'Exportar Documentación',
+    defaultPath: 'documentacion-db.md',
+    filters: [{ name: 'Markdown File', extensions: ['md'] }]
+  });
+
+  if (canceled || !filePath) return { success: false };
+
+  try {
+    // Generamos el string Markdown usando la clase que creamos
+    const markdownContent = MarkdownGenerator.generate(tables);
+
+    // Escribimos el archivo
+    await fs.writeFile(filePath, markdownContent, 'utf-8');
+
+    return { success: true, filePath };
+  } catch (error: any) {
+    console.error(error);
     return { success: false, error: error.message };
   }
 });
