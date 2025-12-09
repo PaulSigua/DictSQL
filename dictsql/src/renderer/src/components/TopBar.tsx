@@ -2,7 +2,6 @@ interface TopBarProps {
   onSave: () => void;
   onOpen: () => void;
   onNew: () => void;
-  // Cambiamos onExport simple por 3 funciones específicas
   onExportMarkdown: () => void;
   onExportHtml: () => void;
   onExportPdf: () => void;
@@ -16,45 +15,54 @@ export function TopBar({
   onSearch, projectName 
 }: TopBarProps) {
   
-  const btnClass = "bg-surface border border-border hover:bg-gray-700 text-white px-3 py-1 rounded text-sm transition-colors cursor-pointer";
-  // botones de exportacion
-  const exportBtnClass = "bg-surface border border-green-800 text-green-400 hover:bg-green-900 px-2 py-1 rounded text-xs transition-colors cursor-pointer ml-1";
+  const btnBase = "bg-red px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-2";
+  const btnSecondary = `${btnBase} bg-surface hover:bg-slate-700 text-gray-300 border border-border hover:border-slate-500`;
+  const btnIcon = "p-1.5 rounded-md text-gray-400 hover:text-white hover:bg-slate-700 transition-colors";
 
   return (
-    <div className="h-10 bg-background border-b border-border flex items-center px-4 gap-2 select-none">
+    <div className="h-14 bg-background/95 backdrop-blur border-b border-border flex items-center px-4 gap-4 select-none shadow-sm">
       
-      <div className="font-bold text-blue-500 mr-2 flex items-center gap-2">
-        <span>🗄️</span> DictSQL
+      <div className="flex items-center gap-2 text-primary font-bold text-lg tracking-tight mr-2">
+        <span className="text-2xl">🗄️</span> 
+        DictSQL
       </div>
       
-      <div className="relative">
+      <div className="relative group">
+        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <span className="text-gray-500">🔍</span>
+        </div>
         <input 
           type="text" 
-          placeholder="🔍 Buscar..." 
+          placeholder="Buscar tablas..." 
           onChange={(e) => onSearch(e.target.value)}
-          className="bg-surface border border-border text-gray-200 text-sm rounded px-2 py-1 w-40 focus:outline-none focus:border-blue-500 transition-all"
+          className="bg-surface text-sm text-gray-200 rounded-full pl-9 pr-4 py-1.5 w-64 border border-border focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder-gray-500"
         />
       </div>
 
       <div className="flex-1"></div>
 
-      <button className={btnClass} onClick={onNew}>Nuevo</button>
-      <button className={btnClass} onClick={onOpen}>Abrir</button>
-      <button className={btnClass} onClick={onSave}>Guardar</button>
+      <div className="flex items-center gap-2">
+        <button className={btnSecondary} onClick={onNew}>Nuevo</button>
+        <button className={btnSecondary} onClick={onOpen}>Abrir</button>
+        <button className={btnSecondary} onClick={onSave}>Guardar</button>
+      </div>
 
-      <div className="w-px h-5 bg-border mx-2"></div>
+      <div className="w-px h-6 bg-border mx-2"></div>
       
-      <div className="flex items-center">
-        <span className="text-xs text-gray-500 mr-2">Exportar:</span>
-        <button className={exportBtnClass} onClick={onExportMarkdown} title="Markdown">MD</button>
-        <button className={exportBtnClass} onClick={onExportHtml} title="HTML Web">HTML</button>
-        <button className={exportBtnClass} onClick={onExportPdf} title="PDF Document">PDF</button>
+      <div className="flex items-center gap-1 bg-surface p-1 rounded-lg border border-border">
+        <span className="text-xs text-gray-500 px-2 font-semibold uppercase tracking-wider">Exportar</span>
+        <button className={btnIcon} onClick={onExportMarkdown} title="Exportar a Markdown">MD</button>
+        <button className={btnIcon} onClick={onExportHtml} title="Exportar a HTML">WEB</button>
+        <button className={btnIcon} onClick={onExportPdf} title="Exportar a PDF">PDF</button>
       </div>
 
       {projectName && (
-        <span className="ml-4 text-xs text-gray-500 truncate max-w-[150px]" title={projectName}>
-          {projectName}
-        </span>
+        <div className="ml-4 flex flex-col items-end">
+          <span className="text-[10px] text-gray-500 uppercase font-bold">Proyecto</span>
+          <span className="text-xs text-blue-400 font-mono truncate max-w-[150px]" title={projectName}>
+            {projectName.split(/[\\/]/).pop()}
+          </span>
+        </div>
       )}
     </div>
   );

@@ -92,7 +92,8 @@ const handleExportMarkdown = async () => {
   );
   
 return (
-    <div className="app-container" style={{ width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', background: '#1a1a1a', color: '#fff' }}>
+    // CAMBIO: Usamos clases Tailwind en lugar de style={{...}}
+    <div className="flex flex-col h-screen w-screen bg-background text-gray-100 font-sans">
       
       <TopBar 
         onSave={handleSave} 
@@ -101,22 +102,29 @@ return (
         onExportMarkdown={handleExportMarkdown}
         onExportHtml={handleExportHtml}
         onExportPdf={handleExportPdf}
-        onSearch={setSearchTerm}
+        onSearch={setSearchTerm} 
         projectName={currentFilePath}
       />
 
-      <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
-        <div style={{ flex: 1, position: 'relative' }}>
+      {/* AREA DE TRABAJO */}
+      <div className="flex-1 flex overflow-hidden relative">
+        
+        {/* IZQUIERDA: Diagrama o Formulario */}
+        <div className="flex-1 relative bg-dots-pattern"> {/* bg-dots-pattern es opcional, lo podemos agregar luego */}
           {tables.length === 0 ? (
-            <ConnectForm onSuccess={handleConnectSuccess} />
+            <div className="h-full flex items-center justify-center p-10">
+               {/* Centramos el formulario perfectamente */}
+              <ConnectForm onSuccess={handleConnectSuccess} />
+            </div>
           ) : (
             <DiagramView 
-              tables={filteredTables} // lista filtrada
+              tables={filteredTables} 
               onNodeClick={handleNodeClick} 
             />
           )}
         </div>
 
+        {/* DERECHA: Panel de Propiedades */}
         {selectedTable && (
           <PropertiesPanel 
             table={selectedTable}
@@ -125,6 +133,7 @@ return (
             onUpdateColumnComment={updateColumnComment}
           />
         )}
+
       </div>
     </div>
   );

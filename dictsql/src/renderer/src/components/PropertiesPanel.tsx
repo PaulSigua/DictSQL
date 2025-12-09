@@ -14,7 +14,7 @@ export function PropertiesPanel({ table, onClose, onUpdateTableComment, onUpdate
     <div style={{
       width: '350px',
       height: '100%',
-      background: '#252526', // Color estilo VS Code
+      background: '#252526',
       borderLeft: '1px solid #333',
       padding: '20px',
       overflowY: 'auto',
@@ -23,13 +23,11 @@ export function PropertiesPanel({ table, onClose, onUpdateTableComment, onUpdate
       flexDirection: 'column',
       gap: '20px'
     }}>
-      {/* Cabecera */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h2 style={{ margin: 0, fontSize: '1.2rem' }}>Propiedades</h2>
         <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: '#aaa', cursor: 'pointer' }}>✖</button>
       </div>
 
-      {/* Info de la Tabla */}
       <div>
         <label style={{ display: 'block', color: '#888', marginBottom: '5px', fontSize: '0.8rem' }}>TABLA</label>
         <div style={{ fontSize: '1.2rem', fontWeight: 'bold', marginBottom: '10px' }}>{table.name}</div>
@@ -46,7 +44,6 @@ export function PropertiesPanel({ table, onClose, onUpdateTableComment, onUpdate
 
       <hr style={{ borderColor: '#333', width: '100%' }} />
 
-      {/* Lista de Columnas */}
       <div>
         <h3 style={{ fontSize: '1rem', marginBottom: '15px' }}>Columnas ({table.columns.length})</h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
