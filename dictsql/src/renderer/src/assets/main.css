@@ -4,6 +4,42 @@
 
 @import './base.css';
 
+@layer components {
+  /* 1. EL EFECTO DEGRADADO (Estilo Angular) */
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-sky-500 to-sky-300;
+  }
+
+  /* 2. CLASES PARA TIPOGRAFÍA */
+  
+  /* Título Gigante (Para el Login/ConnectForm) */
+  .heading-xl {
+    @apply text-5xl md:text-6xl font-extrabold tracking-tight text-white;
+  }
+
+  /* Título de Sección (Para paneles o headers internos) */
+  .heading-lg {
+    @apply text-2xl font-bold tracking-tight text-gray-100;
+  }
+
+  /* Subtítulos o Slogans */
+  .subtitle {
+    @apply text-sm text-gray-400 font-medium tracking-wide uppercase;
+  }
+
+  /* 3. CLASES PARA ICONOS */
+  /* Los iconos SVG (Lucide) usan 'stroke', por lo que el degradado de texto a veces no aplica bien. 
+     Es mejor darles un color sólido que combine o un fondo. */
+  .icon-brand {
+    @apply text-blue-400; /* Color base del brand */
+  }
+  
+  /* Contenedor de icono con brillo */
+  .icon-glow {
+    @apply p-3 rounded-xl bg-gradient-to-br from-blue-500/20 to-sky-500/20 border border-blue-500/30 text-blue-400;
+  }
+}
+
 body {
   display: flex;
   align-items: center;

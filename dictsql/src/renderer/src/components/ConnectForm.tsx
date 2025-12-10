@@ -1,14 +1,15 @@
 import { useState } from 'react';
+import { Database, FileCode, Server, HardDrive, FolderOpen, ArrowRight, Loader2 } from 'lucide-react'; // Iconos nuevos
 import { DbConnectionConfig, TableDefinition } from '../../../shared/types';
+import { Logo } from './dicsql-info/Logo';
 
 interface ConnectFormProps {
   onSuccess?: (tables: TableDefinition[]) => void;
 }
 
 export function ConnectForm({ onSuccess }: ConnectFormProps) {
-  // Estado para los inputs del formulario
   const [formData, setFormData] = useState<DbConnectionConfig>({
-    type: 'postgres', // Default
+    type: 'postgres',
     host: 'localhost',
     port: 5432,
     user: 'postgres',
@@ -16,191 +17,184 @@ export function ConnectForm({ onSuccess }: ConnectFormProps) {
     database: 'postgres',
   });
 
-  // Estado para manejar la respuesta
-  const [status, setStatus] = useState<string>('');
-  const [tables, setTables] = useState<TableDefinition[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Handler genérico para inputs de texto
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.name === 'port' ? parseInt(e.target.value) : e.target.value
     });
+    setError(null); // Limpiar error al escribir
   };
 
-  // Handler específico para el SELECT (Cambia el puerto por defecto)
-  const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newType = e.target.value as any;
+  const handleTypeChange = (type: any) => {
     let defaultPort = 5432;
-    
-    if (newType === 'mysql') defaultPort = 3306;
-    if (newType === 'mssql') defaultPort = 1433;
-    
-    // Mantenemos el resto de la data, pero actualizamos tipo y puerto
-    setFormData({ ...formData, type: newType, port: defaultPort });
+    if (type === 'mysql') defaultPort = 3306;
+    if (type === 'mssql') defaultPort = 1433;
+    setFormData({ ...formData, type, port: defaultPort });
+    setError(null);
+  };
+
+  const handleFileSelect = async () => {
+    const path = await window.api.selectDatabaseFile();
+    if (path) setFormData({ ...formData, database: path });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); // Evita que la página se recargue
-    
-    // Validación básica para SQLite
+    e.preventDefault();
     if (formData.type === 'sqlite' && !formData.database) {
-      setStatus('Error: Debes seleccionar un archivo .db o .sqlite');
+      setError('Selecciona un archivo .db primero');
       return;
     }
 
-    setStatus('Conectando...');
-    setTables([]);
+    setIsLoading(true);
+    setError(null);
 
     try {
-      // LLAMADA AL BACKEND (IPC)
       const response = await window.api.connectDb(formData);
-
       if (response.success && response.data) {
-        setStatus(`¡Éxito! Se encontraron ${response.data.length} tablas.`);
         if (onSuccess) onSuccess(response.data);
-        setTables(response.data);
       } else {
-        setStatus(`Error: ${response.error}`);
+        setError(response.error || 'Error desconocido');
       }
     } catch (err) {
-      setStatus('Error crítico al intentar conectar.');
-      console.error(err);
+      setError('Error crítico de conexión');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // Función auxiliar para pedir el archivo (sin enviar el formulario)
-  const handleFileSelect = async () => {
-    const path = await window.api.selectDatabaseFile();
-    if (path) {
-      setFormData({ ...formData, database: path });
-    }
-  };
+  // --- COMPONENTES VISUALES INTERNOS ---
+  
+  const TypeCard = ({ id, label, icon: Icon }: any) => (
+    <div 
+      onClick={() => handleTypeChange(id)}
+      className={`
+        cursor-pointer flex flex-col items-center justify-center p-3 rounded-lg border transition-all duration-200
+        ${formData.type === id 
+          ? 'bg-primary/10 border-primary text-primary shadow-[0_0_15px_rgba(59,130,246,0.2)]' 
+          : 'bg-surface border-border text-textMuted hover:bg-surfaceHighlight hover:border-gray-500'}
+      `}
+    >
+      <Icon size={20} className="mb-2" />
+      <span className="text-xs font-medium">{label}</span>
+    </div>
+  );
 
-  // Helper para el texto del botón
-  const getButtonText = () => {
-    switch(formData.type) {
-      case 'sqlite': return 'Abrir Archivo SQLite';
-      case 'mysql': return 'Conectar a MySQL';
-      case 'mssql': return 'Conectar a SQL Server';
-      default: return 'Conectar a PostgreSQL';
-    }
-  };
+  const InputField = ({ label, name, type = "text", placeholder, className = "" }: any) => (
+    <div className={`flex flex-col gap-1 ${className}`}>
+      <label className="text-xs font-semibold text-textMuted uppercase tracking-wider">{label}</label>
+      <input
+        type={type}
+        name={name}
+        value={(formData as any)[name]}
+        onChange={handleChange}
+        placeholder={placeholder}
+        className="bg-surface border border-border rounded px-3 py-2 text-sm text-textMain focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder-gray-600"
+      />
+    </div>
+  );
 
   return (
-    <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
-      <h2>Conectar a Base de Datos</h2>
+    <div className="w-full max-w-md mx-auto animate-fade-in">
       
-      {/* 1. EL FORM WRAPPER EMPIEZA AQUÍ */}
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+      {/* TARJETA PRINCIPAL */}
+      <div className="bg-[#111] border border-border rounded-xl shadow-2xl overflow-hidden relative">
         
-        <label>
-          Tipo de Base de Datos:
-          <select 
-            name="type" 
-            value={formData.type} 
-            onChange={handleTypeChange} // <--- Usamos el nuevo handler inteligente
-            style={{ marginLeft: '10px', padding: '5px' }}
-          >
-            <option value="postgres">PostgreSQL</option>
-            <option value="mysql">MySQL</option>
-            <option value="mssql">SQL Server</option>
-            <option value="sqlite">SQLite</option>
-          </select>
-        </label>
+        {/* Header Decorativo */}
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
 
-        {/* 2. CONTENIDO DINÁMICO DENTRO DEL FORM */}
-        {formData.type === 'sqlite' ? (
-          /* FORMULARIO SQLITE (Solo archivo) */
-          <div style={{ border: '1px dashed #555', padding: '15px', borderRadius: '5px' }}>
-            <label style={{ display: 'block', marginBottom: '5px' }}>Archivo de Base de Datos:</label>
-            <div style={{ display: 'flex', gap: '5px' }}>
-              <input 
-                type="text" 
-                value={formData.database} 
-                readOnly 
-                placeholder="Selecciona un archivo..."
-                style={{ flex: 1, padding: '5px', background: '#333', color: '#fff', border: '1px solid #555' }} 
-              />
-              <button 
-                type="button" 
-                onClick={handleFileSelect}
-                style={{ cursor: 'pointer', padding: '5px 10px' }}
-              >
-                📂 Buscar
-              </button>
+        <div className="p-8">
+          <div className="text-center mb-8">
+            <div className="mb-10 text-center">
+            <Logo size="lg" showSlogan={true} />
+          </div>
+            <h1 className="text-2xl font-bold text-white mb-2 flex items-center justify-center gap-2">
+              <Database className="text-primary" /> Conectar
+            </h1>
+            <p className="text-textMuted text-sm">Elige tu motor de base de datos</p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+            
+            {/* SELECTOR DE TIPO (GRID) */}
+            <div className="grid grid-cols-4 gap-3">
+              <TypeCard id="postgres" label="Postgres" icon={Database} />
+              <TypeCard id="mysql" label="MySQL" icon={Server} />
+              <TypeCard id="mssql" label="SQL Srv" icon={HardDrive} />
+              <TypeCard id="sqlite" label="SQLite" icon={FileCode} />
             </div>
-            <p style={{ fontSize: '0.8em', color: '#aaa', marginTop: '5px' }}>
-              Formatos soportados: .db, .sqlite, .sqlite3
-            </p>
-          </div>
-        ) : (
-          /* FORMULARIO ESTÁNDAR (Postgres, MySQL, SQL Server) */
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <label>
-              Host:
-              <input type="text" name="host" value={formData.host} onChange={handleChange} style={{ marginLeft: '10px' }} />
-            </label>
-            
-            <label>
-              Port:
-              <input type="number" name="port" value={formData.port} onChange={handleChange} style={{ marginLeft: '10px' }} />
-            </label>
-            
-            <label>
-              User:
-              <input type="text" name="user" value={formData.user} onChange={handleChange} style={{ marginLeft: '10px' }} />
-            </label>
-            
-            <label>
-              Password:
-              <input type="password" name="password" value={formData.password} onChange={handleChange} style={{ marginLeft: '10px' }} />
-            </label>
-            
-            <label>
-              Database Name:
-              <input type="text" name="database" value={formData.database} onChange={handleChange} style={{ marginLeft: '10px' }} />
-            </label>
-          </div>
-        )}
 
-        {/* 3. BOTÓN SUBMIT DENTRO DEL FORM */}
-        <button 
-          type="submit" 
-          style={{ 
-            padding: '12px', 
-            background: '#007bff', 
-            color: 'white', 
-            border: 'none', 
-            cursor: 'pointer',
-            borderRadius: '4px',
-            fontSize: '1rem',
-            marginTop: '10px'
-          }}
-        >
-          {getButtonText()}
-        </button>
+            {/* CAMPOS DEL FORMULARIO */}
+            <div className="space-y-4 animate-slide-up">
+              {formData.type === 'sqlite' ? (
+                <div className="bg-surfaceHighlight/50 p-4 rounded-lg border border-border border-dashed text-center">
+                  <FolderOpen size={32} className="mx-auto text-textMuted mb-2" />
+                  <p className="text-sm text-textMuted mb-3">Archivo local (.db, .sqlite)</p>
+                  
+                  <div className="flex gap-2">
+                    <input 
+                      value={formData.database.split(/[\\/]/).pop() || ''} // Mostrar solo nombre archivo
+                      readOnly 
+                      placeholder="Ningún archivo seleccionado"
+                      className="flex-1 bg-background border border-border rounded px-3 text-sm text-textMuted focus:outline-none" 
+                    />
+                    <button 
+                      type="button" 
+                      onClick={handleFileSelect}
+                      className="bg-surface border border-border hover:bg-surfaceHighlight text-white px-4 py-2 rounded text-sm transition-colors"
+                    >
+                      Buscar
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="grid grid-cols-3 gap-4">
+                    <InputField label="Host" name="host" placeholder="localhost" className="col-span-2" />
+                    <InputField label="Puerto" name="port" type="number" placeholder="5432" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <InputField label="Usuario" name="user" placeholder="root" />
+                    <InputField label="Contraseña" name="password" type="password" placeholder="••••••" />
+                  </div>
+                  <InputField label="Base de Datos" name="database" placeholder="nombre_db" />
+                </>
+              )}
+            </div>
 
-      </form>
-      {/* FIN DEL FORM */}
+            {/* MENSAJES DE ERROR */}
+            {error && (
+              <div className="bg-red-500/10 border border-red-500/50 text-red-400 text-xs p-3 rounded flex items-center gap-2">
+                <span>⚠️</span> {error}
+              </div>
+            )}
 
-      <div style={{ marginTop: '20px', padding: '10px', border: '1px solid #333', background: '#222', minHeight: '40px' }}>
-        <strong>Estado:</strong> {status}
-      </div>
-
-      {/* Visualización rápida de los resultados */}
-      {tables.length > 0 && (
-        <div style={{ marginTop: '20px' }}>
-          <h3>Tablas Encontradas:</h3>
-          <ul style={{ maxHeight: '200px', overflowY: 'auto' }}>
-            {tables.map((t) => (
-              <li key={t.name}>
-                <strong>{t.name}</strong> ({t.columns.length} columnas)
-              </li>
-            ))}
-          </ul>
+            {/* BOTÓN DE ACCIÓN */}
+            <button 
+              type="submit" 
+              disabled={isLoading}
+              className={`
+                w-full py-2.5 rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-all
+                ${isLoading 
+                  ? 'bg-surface border border-border text-textMuted cursor-not-allowed' 
+                  : 'bg-primary hover:bg-primaryHover text-white shadow-lg shadow-blue-500/20'}
+              `}
+            >
+              {isLoading ? (
+                <><Loader2 className="animate-spin" size={16} /> Conectando...</>
+              ) : (
+                <>Conectar Ahora <ArrowRight size={16} /></>
+              )}
+            </button>
+          </form>
         </div>
-      )}
+      </div>
+      
+      <div className="text-center mt-6 text-xs text-textMuted opacity-50">
+        DictSQL v1.0.0 &bull; Secure Local Connection
+      </div>
     </div>
   );
 }
