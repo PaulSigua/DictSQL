@@ -10,7 +10,7 @@ import {
   LucideIcon
 } from 'lucide-react' // Iconos nuevos
 import { DbConnectionConfig, TableDefinition } from '../../../shared/types'
-import { Logo } from './dicsql-info/Logo'
+import { Logo } from './Logo/Logo'
 
 interface ConnectFormProps {
   onSuccess?: (tables: TableDefinition[]) => void
@@ -76,7 +76,15 @@ export function ConnectForm({ onSuccess }: ConnectFormProps): JSX.Element {
 
   // --- COMPONENTES VISUALES INTERNOS ---
 
-  const TypeCard = ({ id, label, icon: Icon }: { id: string; label: string; icon: LucideIcon }): JSX.Element => (
+  const TypeCard = ({
+    id,
+    label,
+    icon: Icon
+  }: {
+    id: string
+    label: string
+    icon: LucideIcon
+  }): JSX.Element => (
     <div
       onClick={() => handleTypeChange(id)}
       className={`
@@ -93,7 +101,19 @@ export function ConnectForm({ onSuccess }: ConnectFormProps): JSX.Element {
     </div>
   )
 
-  const InputField = ({ label, name, type = 'text', placeholder, className = '' }: { label: string; name: string; type: string; placeholder: string; className: string }): JSX.Element => (
+  const InputField = ({
+    label,
+    name,
+    type = 'text',
+    placeholder,
+    className = ''
+  }: {
+    label: string
+    name: string
+    type: string
+    placeholder: string
+    className: string
+  }): JSX.Element => (
     <div className={`flex flex-col gap-1 ${className}`}>
       <label className="text-xs font-semibold text-textMuted uppercase tracking-wider">
         {label}

@@ -1,6 +1,7 @@
 import Database from 'better-sqlite3'
 import { DatabaseAdapter } from '../db-adapter'
 import { TableDefinition, ColumnDefinition, ForeignKeyDefinition } from '../../../shared/types'
+import { Validators } from '../validators'
 import { ErrorDto } from '../../../shared/dto/error.dto'
 
 export class SqliteAdapter extends DatabaseAdapter {
@@ -50,8 +51,22 @@ export class SqliteAdapter extends DatabaseAdapter {
   private getColumns(tableName: string): ColumnDefinition[] {
     if (!this.db) return []
 
-    // PRAGMA table_info devuelve: cid, name, type, notnull, dflt_value, pk
-    const colsRaw = this.db.prepare(`PRAGMA table_info(?)`).all(tableName) as ColumnDefinition[]
+    // Validar nombre de tabla para prevenir inyección SQL
+    if (!this.isValidTableName(tableName)) {
+      throw new Error(`Invalid table name: ${tableName}`)
+    }
+
+    // SEGURO: Usar prepared statement con placeholder
+    // Nota: PRAGMA table_info no soporta placeholders directamente en better-sqlite3
+    // pero validamos el nombre antes de usarlo
+    const colsRaw = this.db.prepare(`PRAGMA table_info("${tableName}")`).all() as Array<{
+      cid: number
+      name: string
+      type: string
+      notnull: number
+      dflt_value: string | null
+      pk: number
+    }>
 
     return colsRaw.map((col) => ({
       name: col.name,
@@ -66,8 +81,22 @@ export class SqliteAdapter extends DatabaseAdapter {
   private getForeignKeys(tableName: string): ForeignKeyDefinition[] {
     if (!this.db) return []
 
+    // Validar nombre de tabla
+    if (!this.isValidTableName(tableName)) {
+      throw new Error(`Invalid table name: ${tableName}`)
+    }
+
     // PRAGMA foreign_key_list devuelve: id, seq, table, from, to, on_update, on_delete, match
-    const fksRaw = this.db.prepare(`PRAGMA foreign_key_list(?)`).all(tableName) as ForeignKeyDefinition[]
+    const fksRaw = this.db.prepare(`PRAGMA foreign_key_list("${tableName}")`).all() as Array<{
+      id: number
+      seq: number
+      table: string
+      from: string
+      to: string
+      on_update: string
+      on_delete: string
+      match: string
+    }>
 
     return fksRaw.map((fk) => ({
       constraintName: `fk_${tableName}_${fk.id}`, // Generamos un nombre ya que SQLite no siempre los nombra explícitamente en el pragma
@@ -75,5 +104,12 @@ export class SqliteAdapter extends DatabaseAdapter {
       targetTable: fk.table,
       targetColumn: fk.to
     }))
+  }
+
+  /**
+   * Valida que un nombre de tabla sea seguro
+   */
+  private isValidTableName(name: string): boolean {
+    return Validators.isValidIdentifier(name)
   }
 }

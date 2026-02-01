@@ -10,8 +10,8 @@ import {
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css' // estilos base
 import { TableDefinition } from '../../../shared/types'
-import { TableNode } from './diagram/TableNode' // nodo personalizado
-import { getLayoutedElements } from '../utils/layout'
+import { TableNode } from './TableNode' // nodo personalizado
+import { getLayoutedElements } from '../../utils/layout'
 
 // Registramos nuestros tipos de nodos personalizados
 const nodeTypes = {

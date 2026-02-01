@@ -9,7 +9,12 @@ export interface ICustomAPI {
     config: DbConnectionConfig
   ) => Promise<{ success: boolean; data?: DatabaseSchema; error?: string }>
   saveProject: (content: string) => Promise<{ success: boolean; filePath?: string; error?: string }>
-  openProject: () => Promise<{ success: boolean; data?: DatabaseSchema; filePath?: string; error?: string }>
+  openProject: () => Promise<{
+    success: boolean
+    data?: DatabaseSchema
+    filePath?: string
+    error?: string
+  }>
   exportMarkdown: (
     tables: TableDefinition[]
   ) => Promise<{ success: boolean; filePath?: string; error?: string }>

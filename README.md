@@ -6,37 +6,59 @@ DictSQL is a Multiplatform, open-source application for documenting databases an
 ``` bash
 dictsql/
 ├── src/
-│   ├── main/              # Proceso principal (Node.js)
-│   │   ├── index.ts       # Entry point, IPC handlers
-│   │   └── lib/
-│   │       ├── adapters/  # Adaptadores de BD (patrón Strategy)
-│   │       │   ├── postgres-adapter.ts
-│   │       │   ├── mysql-adapter.ts
-│   │       │   ├── sqlite-adapter.ts
-│   │       │   └── mssql-adapter.ts
-│   │       ├── db-adapter.ts          # Clase abstracta base
-│   │       ├── markdown-generator.ts  # Exportación MD
-│   │       └── html-generator.ts      # Exportación HTML/PDF
+│   ├── main/                          # Proceso Principal (Node.js)
+│   │   ├── index.ts                   # ✨ IPC Handlers (simplificado)
+│   │   ├── core/                      # 🆕 Núcleo de la aplicación
+│   │   │   ├── adapters/              # Adaptadores de BD
+│   │   │   │   ├── postgres-adapter.ts
+│   │   │   │   ├── sqlite-adapter.ts
+│   │   │   │   ├── mysql-adapter.ts
+│   │   │   │   └── mssql-adapter.ts
+│   │   │   ├── generators/            # Generadores de documentación
+│   │   │   │   ├── markdown-generator.ts
+│   │   │   │   ├── html-generator.ts
+│   │   │   │   └── markdown-generator.test.ts
+│   │   │   ├── db-adapter.ts          # Clase base abstracta
+│   │   │   ├── logger.ts              # 🔒 Sistema de logging
+│   │   │   ├── error-handler.ts       # 🔒 Manejo de errores
+│   │   │   └── validators.ts          # 🔒 Validación de inputs
+│   │   └── services/                  # 🆕 Capa de servicios
+│   │       ├── database.service.ts    # Lógica de BD
+│   │       └── file.service.ts        # Lógica de archivos
 │   │
-│   ├── preload/           # Capa de seguridad (Context Bridge)
-│   │   └── index.ts       # Expone APIs al renderer
-│   │
-│   ├── renderer/          # Proceso de renderizado (React)
+│   ├── renderer/                      # Proceso Renderer (React)
 │   │   └── src/
-│   │       ├── App.tsx              # Componente principal
+│   │       ├── App.tsx                # Componente principal
+│   │       ├── main.tsx               # Entry point
 │   │       ├── components/
-│   │       │   ├── ConnectForm.tsx      # Formulario de conexión
-│   │       │   ├── DiagramView.tsx      # Vista del diagrama ER
-│   │       │   ├── PropertiesPanel.tsx  # Panel de edición
-│   │       │   └── TopBar.tsx           # Barra de herramientas
+│   │       │   ├── ConnectForm.tsx    # Formulario de conexión
+│   │       │   ├── PropertiesPanel.tsx # Panel de propiedades
+│   │       │   ├── Versions.tsx       # Info de versiones
+│   │       │   ├── Logo/
+│   │       │   │   └── Logo.tsx       # 🆕 Logo componente
+│   │       │   └── diagram/           # 🆕 Componentes de diagrama
+│   │       │       ├── DiagramView.tsx
+│   │       │       └── TableNode.tsx
+│   │       ├── layouts/               # 🆕 Layouts
+│   │       │   └── TopBar.tsx         # Barra superior
 │   │       └── utils/
-│   │           └── layout.ts            # Layout automático (Dagre)
+│   │           └── layout.ts          # Algoritmo de layout (Dagre)
 │   │
-│   └── shared/            # Tipos compartidos
-│       └── types.ts       # Interfaces TypeScript
+│   ├── shared/                        # Código compartido
+│   │   ├── dto/                       # Data Transfer Objects
+│   │   │   ├── database.dto.ts
+│   │   │   ├── error.dto.ts
+│   │   │   └── logger.dto.ts          # 🆕 DTO para metadata
+│   │   ├── constants/                 # 🆕 Constantes
+│   │   │   └── error-codes.ts
+│   │   └── types.ts                   # Tipos compartidos
+│   │
+│   └── preload/                       # Preload script
+│       └── index.ts                   # Context bridge
 │
-├── electron.vite.config.ts   # Configuración de build
 ├── package.json
+├── tsconfig.json
+└── electron.vite.config.ts
 
 ```
 

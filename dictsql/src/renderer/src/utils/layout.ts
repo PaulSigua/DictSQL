@@ -4,7 +4,10 @@ import { Node, Edge, Position } from '@xyflow/react'
 const nodeWidth = 220
 const nodeHeight = 200 // Aproximado, idealmente sería dinámico
 
-export const getLayoutedElements = (nodes: Node[], edges: Edge[]): { nodes: Node[]; edges: Edge[] } => {
+export const getLayoutedElements = (
+  nodes: Node[],
+  edges: Edge[]
+): { nodes: Node[]; edges: Edge[] } => {
   const dagreGraph = new dagre.graphlib.Graph()
   dagreGraph.setDefaultEdgeLabel(() => ({}))
 

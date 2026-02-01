@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { ConnectForm } from './components/ConnectForm'
-import { DiagramView } from './components/DiagramView'
+import { DiagramView } from './components/diagram/DiagramView'
 import { PropertiesPanel } from './components/PropertiesPanel'
-import { TopBar } from './components/TopBar' // <-- Importar
+import { TopBar } from './layouts/TopBar' // <-- Importar
 import { TableDefinition } from '../../shared/types'
 
 function App(): React.JSX.Element {

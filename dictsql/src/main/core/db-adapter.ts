@@ -24,5 +24,5 @@ export abstract class DatabaseAdapter {
   /**
    * Obtiene el esquema de la base de datos (tablas, columnas, relaciones)
    */
-  abstract getDatabaseSchema(): Promise<{ tables: TableDefinition[] }>
+  abstract getSchema(): Promise<TableDefinition[]>
 }

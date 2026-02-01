@@ -1,4 +1,4 @@
-import { Logo } from './dicsql-info/Logo'
+import { Logo } from '../components/Logo/Logo'
 import { Search } from 'lucide-react'
 
 interface TopBarProps {
