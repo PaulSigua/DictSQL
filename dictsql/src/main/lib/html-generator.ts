@@ -1,9 +1,9 @@
-import { TableDefinition } from '../../shared/types';
+import { TableDefinition } from '../../shared/types'
 
 export class HtmlGenerator {
   static generate(tables: TableDefinition[]): string {
-    const date = new Date().toLocaleDateString();
-    
+    const date = new Date().toLocaleDateString()
+
     // Estilos CSS incrustados (limpios y para impresión)
     const styles = `
       body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; }
@@ -30,7 +30,7 @@ export class HtmlGenerator {
         h2 { page-break-before: always; } /* Cada tabla en una página nueva opcional */
         h2:first-of-type { page-break-before: avoid; }
       }
-    `;
+    `
 
     let html = `
     <!DOCTYPE html>
@@ -47,18 +47,18 @@ export class HtmlGenerator {
       <div class="toc">
         <h3>Índice de Tablas</h3>
         <ul>
-          ${tables.map(t => `<li><a href="#${t.name}">${t.name}</a></li>`).join('')}
+          ${tables.map((t) => `<li><a href="#${t.name}">${t.name}</a></li>`).join('')}
         </ul>
       </div>
-    `;
+    `
 
-    tables.forEach(table => {
+    tables.forEach((table) => {
       html += `
       <h2 id="${table.name}">${table.name}</h2>
-      `;
+      `
 
       if (table.comment) {
-        html += `<div class="comment-block">${table.comment}</div>`;
+        html += `<div class="comment-block">${table.comment}</div>`
       }
 
       html += `
@@ -72,13 +72,13 @@ export class HtmlGenerator {
           </tr>
         </thead>
         <tbody>
-      `;
+      `
 
-      table.columns.forEach(col => {
-        const attributes: string[] = [];
-        if (col.isPrimaryKey) attributes.push('<span class="pk">PK</span>');
-        if (!col.isNullable) attributes.push('Not Null');
-        if (col.defaultValue) attributes.push(`Def: ${col.defaultValue}`);
+      table.columns.forEach((col) => {
+        const attributes: string[] = []
+        if (col.isPrimaryKey) attributes.push('<span class="pk">PK</span>')
+        if (!col.isNullable) attributes.push('Not Null')
+        if (col.defaultValue) attributes.push(`Def: ${col.defaultValue}`)
 
         html += `
           <tr>
@@ -87,28 +87,28 @@ export class HtmlGenerator {
             <td>${attributes.join(', ')}</td>
             <td>${col.comment || ''}</td>
           </tr>
-        `;
-      });
+        `
+      })
 
       html += `
         </tbody>
       </table>
-      `;
+      `
 
       if (table.foreignKeys.length > 0) {
-        html += `<h3>Relaciones</h3><ul>`;
-        table.foreignKeys.forEach(fk => {
-          html += `<li><span class="fk">${fk.sourceColumn}</span> &rarr; ${fk.targetTable}.${fk.targetColumn}</li>`;
-        });
-        html += `</ul>`;
+        html += `<h3>Relaciones</h3><ul>`
+        table.foreignKeys.forEach((fk) => {
+          html += `<li><span class="fk">${fk.sourceColumn}</span> &rarr; ${fk.targetTable}.${fk.targetColumn}</li>`
+        })
+        html += `</ul>`
       }
-    });
+    })
 
     html += `
     </body>
     </html>
-    `;
+    `
 
-    return html;
+    return html
   }
 }

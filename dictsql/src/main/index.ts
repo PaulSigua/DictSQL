@@ -5,12 +5,13 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { PostgresAdapter } from './lib/adapters/postgres-adapter'
 import { DbConnectionConfig } from '../shared/types'
-import { MarkdownGenerator } from './lib/markdown-generator';
-import { TableDefinition } from '../shared/types';
+import { MarkdownGenerator } from './lib/markdown-generator'
+import { TableDefinition } from '../shared/types'
 import { SqliteAdapter } from './lib/adapters/sqlite-adapter'
 import { MysqlAdapter } from './lib/adapters/mysql-adapter'
 import { MssqlAdapter } from './lib/adapters/mssql-adapter'
-import { HtmlGenerator } from './lib/html-generator';
+import { HtmlGenerator } from './lib/html-generator'
+import { ErrorDto } from '../shared/dto/error.dto'
 
 // --- IPC Handlers para Base de Datos ---
 ipcMain.handle('db:connect', async (_event, config: DbConnectionConfig) => {
@@ -21,7 +22,7 @@ ipcMain.handle('db:connect', async (_event, config: DbConnectionConfig) => {
 
     // Factory simple: elegimos el adaptador según el tipo
     if (config.type === 'postgres') {
-      adapter = new PostgresAdapter(config);
+      adapter = new PostgresAdapter(config)
     } else if (config.type === 'sqlite') {
       adapter = new SqliteAdapter(config)
     } else if (config.type === 'mysql') {
@@ -38,10 +39,9 @@ ipcMain.handle('db:connect', async (_event, config: DbConnectionConfig) => {
 
     console.log(`Esquema obtenido: ${schema.length} tablas encontradas.`)
     return { success: true, data: schema }
-
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error de conexión:', error)
-    return { success: false, error: error.message }
+    return { success: false, error: (error as ErrorDto).message }
   }
 })
 
@@ -52,7 +52,7 @@ ipcMain.handle('dialog:openFile', async () => {
     properties: ['openFile'],
     filters: [{ name: 'SQLite Database', extensions: ['db', 'sqlite', 'sqlite3'] }]
   })
-  
+
   if (canceled || filePaths.length === 0) return null
   return filePaths[0]
 })
@@ -72,8 +72,8 @@ ipcMain.handle('file:save', async (_event, content: string) => {
   try {
     await fs.writeFile(filePath, content, 'utf-8')
     return { success: true, filePath }
-  } catch (error: any) {
-    return { success: false, error: error.message }
+  } catch (error: unknown) {
+    return { success: false, error: (error as ErrorDto).message }
   }
 })
 
@@ -90,8 +90,8 @@ ipcMain.handle('file:open', async () => {
   try {
     const content = await fs.readFile(filePaths[0], 'utf-8')
     return { success: true, data: JSON.parse(content), filePath: filePaths[0] }
-  } catch (error: any) {
-    return { success: false, error: error.message }
+  } catch (error: unknown) {
+    return { success: false, error: (error as ErrorDto).message }
   }
 })
 
@@ -113,9 +113,9 @@ ipcMain.handle('file:export-markdown', async (_event, tables: TableDefinition[])
     await fs.writeFile(filePath, markdownContent, 'utf-8')
 
     return { success: true, filePath }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error)
-    return { success: false, error: error.message }
+    return { success: false, error: (error as ErrorDto).message }
   }
 })
 
@@ -129,18 +129,18 @@ ipcMain.handle('file:export-html', async (_event, tables: TableDefinition[]) => 
     title: 'Exportar a HTML',
     defaultPath: 'documentacion.html',
     filters: [{ name: 'HTML Webpage', extensions: ['html'] }]
-  });
+  })
 
-  if (canceled || !filePath) return { success: false };
+  if (canceled || !filePath) return { success: false }
 
   try {
-    const htmlContent = HtmlGenerator.generate(tables);
-    await fs.writeFile(filePath, htmlContent, 'utf-8');
-    return { success: true, filePath };
-  } catch (error: any) {
-    return { success: false, error: error.message };
+    const htmlContent = HtmlGenerator.generate(tables)
+    await fs.writeFile(filePath, htmlContent, 'utf-8')
+    return { success: true, filePath }
+  } catch (error: unknown) {
+    return { success: false, error: (error as ErrorDto).message }
   }
-});
+})
 
 // Exportar PDF (Truco: Renderizar HTML en ventana oculta)
 ipcMain.handle('file:export-pdf', async (_event, tables: TableDefinition[]) => {
@@ -148,40 +148,39 @@ ipcMain.handle('file:export-pdf', async (_event, tables: TableDefinition[]) => {
     title: 'Exportar a PDF',
     defaultPath: 'documentacion.pdf',
     filters: [{ name: 'PDF Document', extensions: ['pdf'] }]
-  });
+  })
 
-  if (canceled || !filePath) return { success: false };
+  if (canceled || !filePath) return { success: false }
 
   // 1. Generamos el HTML
-  const htmlContent = HtmlGenerator.generate(tables);
+  const htmlContent = HtmlGenerator.generate(tables)
 
   // 2. Creamos una ventana oculta temporal
-  const printWindow = new BrowserWindow({ show: false });
+  const printWindow = new BrowserWindow({ show: false })
 
   try {
     // 3. Cargamos el HTML (usando data URI para no crear archivos temporales)
-    const htmlBase64 = Buffer.from(htmlContent).toString('base64');
-    await printWindow.loadURL(`data:text/html;charset=utf-8;base64,${htmlBase64}`);
+    const htmlBase64 = Buffer.from(htmlContent).toString('base64')
+    await printWindow.loadURL(`data:text/html;charset=utf-8;base64,${htmlBase64}`)
 
     // 4. Imprimimos a PDF
     const pdfData = await printWindow.webContents.printToPDF({
       printBackground: true, // Imprimir colores de fondo
       pageSize: 'A4',
       margins: { top: 1, bottom: 1, left: 1, right: 1 } // Márgenes en cm (aprox)
-    });
+    })
 
     // 5. Guardamos el archivo
-    await fs.writeFile(filePath, pdfData);
+    await fs.writeFile(filePath, pdfData)
 
-    printWindow.close(); // Limpieza
-    return { success: true, filePath };
-
-  } catch (error: any) {
-    printWindow.close();
-    console.error(error);
-    return { success: false, error: error.message };
+    printWindow.close() // Limpieza
+    return { success: true, filePath }
+  } catch (error: unknown) {
+    printWindow.close()
+    console.error(error)
+    return { success: false, error: (error as ErrorDto).message }
   }
-});
+})
 
 function createWindow(): void {
   // Create the browser window.
