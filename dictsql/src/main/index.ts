@@ -1,122 +1,36 @@
-import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
-import fs from 'node:fs/promises'
+import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { PostgresAdapter } from './lib/adapters/postgres-adapter'
-import { DbConnectionConfig } from '../shared/types'
-import { MarkdownGenerator } from './lib/markdown-generator'
-import { TableDefinition } from '../shared/types'
-import { SqliteAdapter } from './lib/adapters/sqlite-adapter'
-import { MysqlAdapter } from './lib/adapters/mysql-adapter'
-import { MssqlAdapter } from './lib/adapters/mssql-adapter'
-import { HtmlGenerator } from './lib/html-generator'
-import { ErrorDto } from '../shared/dto/error.dto'
+import { DbConnectionConfig, TableDefinition } from '../shared/dto/database.dto'
+import { DatabaseService } from './services/database.service'
+import { FileService } from './services/file.service'
 
 // --- IPC Handlers para Base de Datos ---
 ipcMain.handle('db:connect', async (_event, config: DbConnectionConfig) => {
-  console.log('Intentando conectar a:', config.database)
-
-  try {
-    let adapter
-
-    // Factory simple: elegimos el adaptador según el tipo
-    if (config.type === 'postgres') {
-      adapter = new PostgresAdapter(config)
-    } else if (config.type === 'sqlite') {
-      adapter = new SqliteAdapter(config)
-    } else if (config.type === 'mysql') {
-      adapter = new MysqlAdapter(config)
-    } else if (config.type === 'mssql') {
-      adapter = new MssqlAdapter(config)
-    } else {
-      throw new Error(`Tipo de base de datos no soportado: ${config.type}`)
-    }
-
-    await adapter.connect()
-    const schema = await adapter.getSchema()
-    await adapter.disconnect() // Por ahora desconectamos al terminar de leer
-
-    console.log(`Esquema obtenido: ${schema.length} tablas encontradas.`)
-    return { success: true, data: schema }
-  } catch (error: unknown) {
-    console.error('Error de conexión:', error)
-    return { success: false, error: (error as ErrorDto).message }
-  }
+  return await DatabaseService.getSchema(config)
 })
 
 // IPC para seleccionar archivo DB (SQLite)
 ipcMain.handle('dialog:openFile', async () => {
-  const { canceled, filePaths } = await dialog.showOpenDialog({
-    title: 'Seleccionar archivo de Base de Datos',
-    properties: ['openFile'],
-    filters: [{ name: 'SQLite Database', extensions: ['db', 'sqlite', 'sqlite3'] }]
-  })
-
-  if (canceled || filePaths.length === 0) return null
-  return filePaths[0]
+  return await FileService.selectDatabaseFile()
 })
 
 // --- IPC Handlers para Archivos ---
 
 // Guardar Proyecto
 ipcMain.handle('file:save', async (_event, content: string) => {
-  const { canceled, filePath } = await dialog.showSaveDialog({
-    title: 'Guardar Documentación',
-    defaultPath: 'mi-proyecto.dictsql',
-    filters: [{ name: 'DictSQL Project', extensions: ['dictsql', 'json'] }]
-  })
-
-  if (canceled || !filePath) return { success: false }
-
-  try {
-    await fs.writeFile(filePath, content, 'utf-8')
-    return { success: true, filePath }
-  } catch (error: unknown) {
-    return { success: false, error: (error as ErrorDto).message }
-  }
+  return await FileService.saveProject(content)
 })
 
 // Abrir Proyecto
 ipcMain.handle('file:open', async () => {
-  const { canceled, filePaths } = await dialog.showOpenDialog({
-    title: 'Abrir Proyecto',
-    properties: ['openFile'],
-    filters: [{ name: 'DictSQL Project', extensions: ['dictsql', 'json'] }]
-  })
-
-  if (canceled || filePaths.length === 0) return { success: false }
-
-  try {
-    const content = await fs.readFile(filePaths[0], 'utf-8')
-    return { success: true, data: JSON.parse(content), filePath: filePaths[0] }
-  } catch (error: unknown) {
-    return { success: false, error: (error as ErrorDto).message }
-  }
+  return await FileService.openProject()
 })
 
 // Exportar a Markdown
 ipcMain.handle('file:export-markdown', async (_event, tables: TableDefinition[]) => {
-  const { canceled, filePath } = await dialog.showSaveDialog({
-    title: 'Exportar Documentación',
-    defaultPath: 'documentacion-db.md',
-    filters: [{ name: 'Markdown File', extensions: ['md'] }]
-  })
-
-  if (canceled || !filePath) return { success: false }
-
-  try {
-    // Generamos el string Markdown usando la clase que creamos
-    const markdownContent = MarkdownGenerator.generate(tables)
-
-    // Escribimos el archivo
-    await fs.writeFile(filePath, markdownContent, 'utf-8')
-
-    return { success: true, filePath }
-  } catch (error: unknown) {
-    console.error(error)
-    return { success: false, error: (error as ErrorDto).message }
-  }
+  return await FileService.exportMarkdown(tables)
 })
 
 // ---------------------------------------------------------
@@ -125,61 +39,12 @@ ipcMain.handle('file:export-markdown', async (_event, tables: TableDefinition[])
 
 // Exportar HTML
 ipcMain.handle('file:export-html', async (_event, tables: TableDefinition[]) => {
-  const { canceled, filePath } = await dialog.showSaveDialog({
-    title: 'Exportar a HTML',
-    defaultPath: 'documentacion.html',
-    filters: [{ name: 'HTML Webpage', extensions: ['html'] }]
-  })
-
-  if (canceled || !filePath) return { success: false }
-
-  try {
-    const htmlContent = HtmlGenerator.generate(tables)
-    await fs.writeFile(filePath, htmlContent, 'utf-8')
-    return { success: true, filePath }
-  } catch (error: unknown) {
-    return { success: false, error: (error as ErrorDto).message }
-  }
+  return await FileService.exportHtml(tables)
 })
 
 // Exportar PDF (Truco: Renderizar HTML en ventana oculta)
 ipcMain.handle('file:export-pdf', async (_event, tables: TableDefinition[]) => {
-  const { canceled, filePath } = await dialog.showSaveDialog({
-    title: 'Exportar a PDF',
-    defaultPath: 'documentacion.pdf',
-    filters: [{ name: 'PDF Document', extensions: ['pdf'] }]
-  })
-
-  if (canceled || !filePath) return { success: false }
-
-  // 1. Generamos el HTML
-  const htmlContent = HtmlGenerator.generate(tables)
-
-  // 2. Creamos una ventana oculta temporal
-  const printWindow = new BrowserWindow({ show: false })
-
-  try {
-    // 3. Cargamos el HTML (usando data URI para no crear archivos temporales)
-    const htmlBase64 = Buffer.from(htmlContent).toString('base64')
-    await printWindow.loadURL(`data:text/html;charset=utf-8;base64,${htmlBase64}`)
-
-    // 4. Imprimimos a PDF
-    const pdfData = await printWindow.webContents.printToPDF({
-      printBackground: true, // Imprimir colores de fondo
-      pageSize: 'A4',
-      margins: { top: 1, bottom: 1, left: 1, right: 1 } // Márgenes en cm (aprox)
-    })
-
-    // 5. Guardamos el archivo
-    await fs.writeFile(filePath, pdfData)
-
-    printWindow.close() // Limpieza
-    return { success: true, filePath }
-  } catch (error: unknown) {
-    printWindow.close()
-    console.error(error)
-    return { success: false, error: (error as ErrorDto).message }
-  }
+  return await FileService.exportPdf(tables)
 })
 
 function createWindow(): void {
