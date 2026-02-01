@@ -9,8 +9,8 @@ const api = {
   openProject: () => ipcRenderer.invoke('file:open'),
   exportMarkdown: (tables: TableDefinition[]) => ipcRenderer.invoke('file:export-markdown', tables),
   selectDatabaseFile: () => ipcRenderer.invoke('dialog:openFile'),
-  exportHtml: (tables: any[]) => ipcRenderer.invoke('file:export-html', tables),
-  exportPdf: (tables: any[]) => ipcRenderer.invoke('file:export-pdf', tables),
+  exportHtml: (tables: TableDefinition[]) => ipcRenderer.invoke('file:export-html', tables),
+  exportPdf: (tables: TableDefinition[]) => ipcRenderer.invoke('file:export-pdf', tables)
 }
 
 if (process.contextIsolated) {

@@ -1,22 +1,30 @@
-import { DbConnectionConfig, DatabaseSchema } from '../../shared/types';
+import { DbConnectionConfig, DatabaseSchema, TableDefinition } from '../../shared/types'
 
 export interface IElectronAPI {
-  loadPreferences: () => Promise<void>;
+  loadPreferences: () => Promise<void>
 }
 
 export interface ICustomAPI {
-  connectDb: (config: DbConnectionConfig) => Promise<{ success: boolean; data?: DatabaseSchema; error?: string }>;
-  saveProject: (content: string) => Promise<{ success: boolean; filePath?: string; error?: string }>;
-  openProject: () => Promise<{ success: boolean; data?: any; filePath?: string; error?: string }>;
-  exportMarkdown: (tables: TableDefinition[]) => Promise<{ success: boolean; filePath?: string; error?: string }>;
-  selectDatabaseFile: () => Promise<string | null>;
-  exportHtml: (tables: TableDefinition[]) => Promise<{ success: boolean; filePath?: string; error?: string }>;
-  exportPdf: (tables: TableDefinition[]) => Promise<{ success: boolean; filePath?: string; error?: string }>;
+  connectDb: (
+    config: DbConnectionConfig
+  ) => Promise<{ success: boolean; data?: DatabaseSchema; error?: string }>
+  saveProject: (content: string) => Promise<{ success: boolean; filePath?: string; error?: string }>
+  openProject: () => Promise<{ success: boolean; data?: DatabaseSchema; filePath?: string; error?: string }>
+  exportMarkdown: (
+    tables: TableDefinition[]
+  ) => Promise<{ success: boolean; filePath?: string; error?: string }>
+  selectDatabaseFile: () => Promise<string | null>
+  exportHtml: (
+    tables: TableDefinition[]
+  ) => Promise<{ success: boolean; filePath?: string; error?: string }>
+  exportPdf: (
+    tables: TableDefinition[]
+  ) => Promise<{ success: boolean; filePath?: string; error?: string }>
 }
 
 declare global {
   interface Window {
-    electron: IElectronAPI;
-    api: ICustomAPI; // API personalizada
+    electron: IElectronAPI
+    api: ICustomAPI // API personalizada
   }
 }

@@ -1,142 +1,142 @@
-import { useState } from 'react';
-import { ConnectForm } from './components/ConnectForm';
-import { DiagramView } from './components/DiagramView';
-import { PropertiesPanel } from './components/PropertiesPanel';
-import { TopBar } from './components/TopBar'; // <-- Importar
-import { TableDefinition } from '../../shared/types';
+import { useState } from 'react'
+import { ConnectForm } from './components/ConnectForm'
+import { DiagramView } from './components/DiagramView'
+import { PropertiesPanel } from './components/PropertiesPanel'
+import { TopBar } from './components/TopBar' // <-- Importar
+import { TableDefinition } from '../../shared/types'
 
 function App(): React.JSX.Element {
-  const [tables, setTables] = useState<TableDefinition[]>([]);
-  const [selectedTableName, setSelectedTableName] = useState<string | null>(null);
-  const [currentFilePath, setCurrentFilePath] = useState<string | undefined>(undefined);
+  const [tables, setTables] = useState<TableDefinition[]>([])
+  const [selectedTableName, setSelectedTableName] = useState<string | null>(null)
+  const [currentFilePath, setCurrentFilePath] = useState<string | undefined>(undefined)
 
   // --- Lógica de Archivos ---
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>('')
 
-  const handleSave = async () => {
-    if (tables.length === 0) return alert("No hay nada que guardar");
-    
+  const handleSave = async (): Promise<void> => {
+    if (tables.length === 0) return alert('No hay nada que guardar')
+
     // Convertimos el estado actual a string
-    const content = JSON.stringify({ tables }, null, 2);
-    
-    const result = await window.api.saveProject(content);
-    if (result.success && result.filePath) {
-      setCurrentFilePath(result.filePath);
-      alert("Proyecto guardado correctamente");
-    }
-  };
+    const content = JSON.stringify({ tables }, null, 2)
 
-  const handleOpen = async () => {
-    const result = await window.api.openProject();
+    const result = await window.api.saveProject(content)
+    if (result.success && result.filePath) {
+      setCurrentFilePath(result.filePath)
+      alert('Proyecto guardado correctamente')
+    }
+  }
+
+  const handleOpen = async (): Promise<void> => {
+    const result = await window.api.openProject()
     if (result.success && result.data) {
       // Cargamos los datos del archivo en el estado
       // Aquí asumimos que el archivo tiene la estructura { tables: [...] }
-      setTables(result.data.tables);
-      setCurrentFilePath(result.filePath);
-      setSelectedTableName(null); // Limpiamos selección
+      setTables(result.data.tables)
+      setCurrentFilePath(result.filePath)
+      setSelectedTableName(null) // Limpiamos selección
     }
-  };
+  }
 
-  const handleNew = () => {
-    if (confirm("¿Estás seguro? Se perderán los cambios no guardados.")) {
-      setTables([]);
-      setCurrentFilePath(undefined);
-      setSelectedTableName(null);
+  const handleNew = (): void => {
+    if (confirm('¿Estás seguro? Se perderán los cambios no guardados.')) {
+      setTables([])
+      setCurrentFilePath(undefined)
+      setSelectedTableName(null)
     }
-  };
+  }
 
   // ... (funciones handleNodeClick, updates existentes sin cambios)
-  const handleConnectSuccess = (data: TableDefinition[]) => setTables(data);
-  const handleNodeClick = (_e: any, node: any) => setSelectedTableName(node.id);
-  
-  const updateTableComment = (tableName: string, comment: string) => {
-      setTables(prev => prev.map(t => t.name === tableName ? { ...t, comment } : t));
-  };
-  const updateColumnComment = (tableName: string, colName: string, comment: string) => {
-      setTables(prev => prev.map(table => {
-        if (table.name !== tableName) return table;
-        const updatedColumns = table.columns.map(col => col.name === colName ? { ...col, comment } : col);
-        return { ...table, columns: updatedColumns };
-      }));
-  };
-  const selectedTable = tables.find(t => t.name === selectedTableName) || null;
+  const handleConnectSuccess = (data: TableDefinition[]): void => setTables(data)
+  const handleNodeClick = (_e: unknown, node: unknown): void => setSelectedTableName(node.id)
 
-const handleExportMarkdown = async () => {
-    if (tables.length === 0) return alert("Sin datos");
-    const result = await window.api.exportMarkdown(tables);
-    if (result.success) alert(`Guardado en: ${result.filePath}`);
-    else if (result.error) alert(`Error: ${result.error}`);
-  };
+  const updateTableComment = (tableName: string, comment: string): void => {
+    setTables((prev) => prev.map((t) => (t.name === tableName ? { ...t, comment } : t)))
+  }
+  const updateColumnComment = (tableName: string, colName: string, comment: string): void => {
+    setTables((prev) =>
+      prev.map((table) => {
+        if (table.name !== tableName) return table
+        const updatedColumns = table.columns.map((col) =>
+          col.name === colName ? { ...col, comment } : col
+        )
+        return { ...table, columns: updatedColumns }
+      })
+    )
+  }
+  const selectedTable = tables.find((t) => t.name === selectedTableName) || null
 
-  const handleExportHtml = async () => {
-    if (tables.length === 0) return alert("Sin datos");
-    const result = await window.api.exportHtml(tables);
-    if (result.success) alert(`Guardado en: ${result.filePath}`);
-    else if (result.error) alert(`Error: ${result.error}`);
-  };
+  const handleExportMarkdown = async (): Promise<void> => {
+    if (tables.length === 0) return alert('Sin datos')
+    const result = await window.api.exportMarkdown(tables)
+    if (result.success) alert(`Guardado en: ${result.filePath}`)
+    else if (result.error) alert(`Error: ${result.error}`)
+  }
 
-  const handleExportPdf = async () => {
-    if (tables.length === 0) return alert("Sin datos");
+  const handleExportHtml = async (): Promise<void> => {
+    if (tables.length === 0) return alert('Sin datos')
+    const result = await window.api.exportHtml(tables)
+    if (result.success) alert(`Guardado en: ${result.filePath}`)
+    else if (result.error) alert(`Error: ${result.error}`)
+  }
+
+  const handleExportPdf = async (): Promise<void> => {
+    if (tables.length === 0) return alert('Sin datos')
     // Aviso de "Cargando" porque el PDF puede tardar 1 o 2 segundos
-    const toastId = setTimeout(() => alert("Generando PDF... por favor espera"), 500); // Simple feedback
-    
-    const result = await window.api.exportPdf(tables);
-    clearTimeout(toastId); // Limpiamos si fue muy rápido
-    
-    if (result.success) alert(`PDF generado en: ${result.filePath}`);
-    else if (result.error) alert(`Error: ${result.error}`);
-  };
-  
-  const filteredTables = tables.filter(table => 
+    const toastId = setTimeout(() => alert('Generando PDF... por favor espera'), 500) // Simple feedback
+
+    const result = await window.api.exportPdf(tables)
+    clearTimeout(toastId) // Limpiamos si fue muy rápido
+
+    if (result.success) alert(`PDF generado en: ${result.filePath}`)
+    else if (result.error) alert(`Error: ${result.error}`)
+  }
+
+  const filteredTables = tables.filter((table) =>
     table.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  
-return (
+  )
+
+  return (
     // CAMBIO: Usamos clases Tailwind en lugar de style={{...}}
     <div className="flex flex-col h-screen w-screen bg-background text-gray-100 font-sans">
-      
-      <TopBar 
-        onSave={handleSave} 
-        onOpen={handleOpen} 
+      <TopBar
+        onSave={handleSave}
+        onOpen={handleOpen}
         onNew={handleNew}
         onExportMarkdown={handleExportMarkdown}
         onExportHtml={handleExportHtml}
         onExportPdf={handleExportPdf}
-        onSearch={setSearchTerm} 
+        onSearch={setSearchTerm}
         projectName={currentFilePath}
       />
 
       {/* AREA DE TRABAJO */}
       <div className="flex-1 flex overflow-hidden relative">
-        
         {/* IZQUIERDA: Diagrama o Formulario */}
-        <div className="flex-1 relative bg-dots-pattern"> {/* bg-dots-pattern es opcional, lo podemos agregar luego */}
+        <div className="flex-1 relative bg-dots-pattern">
+          {' '}
+          {/* bg-dots-pattern es opcional, lo podemos agregar luego */}
           {tables.length === 0 ? (
             <div className="h-full flex items-center justify-center p-10">
-               {/* Centramos el formulario perfectamente */}
+              {/* Centramos el formulario perfectamente */}
               <ConnectForm onSuccess={handleConnectSuccess} />
             </div>
           ) : (
-            <DiagramView 
-              tables={filteredTables} 
-              onNodeClick={handleNodeClick} 
-            />
+            <DiagramView tables={filteredTables} onNodeClick={handleNodeClick} />
           )}
         </div>
 
         {/* DERECHA: Panel de Propiedades */}
         {selectedTable && (
-          <PropertiesPanel 
+          <PropertiesPanel
             table={selectedTable}
             onClose={() => setSelectedTableName(null)}
             onUpdateTableComment={updateTableComment}
             onUpdateColumnComment={updateColumnComment}
           />
         )}
-
       </div>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

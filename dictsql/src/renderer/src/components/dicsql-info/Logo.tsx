@@ -1,11 +1,10 @@
-import { Database } from 'lucide-react';
+import { Database } from 'lucide-react'
 
 interface LogoProps {
-  size?: 'sm' | 'lg'; // Pequeño para TopBar, Grande para ConnectForm
+  size?: 'sm' | 'lg' // Pequeño para TopBar, Grande para ConnectForm
 }
 
-export function Logo({ size = 'lg' }: LogoProps) {
-  
+export function Logo({ size = 'lg' }: LogoProps): JSX.Element {
   if (size === 'sm') {
     // Versión pequeña (Para la barra superior)
     return (
@@ -15,7 +14,7 @@ export function Logo({ size = 'lg' }: LogoProps) {
           <span className="text-gradient text-sm font-bold">DictSQL</span>
         </span>
       </div>
-    );
+    )
   }
 
   // Versión grande (Para el formulario de conexión)
@@ -26,5 +25,5 @@ export function Logo({ size = 'lg' }: LogoProps) {
         <span className="text-gradient font-bold">DictSQL</span>
       </h1>
     </div>
-  );
+  )
 }

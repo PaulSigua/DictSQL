@@ -1,9 +1,9 @@
-import sql from 'mssql';
-import { DatabaseAdapter } from '../db-adapter';
-import { TableDefinition, ColumnDefinition, ForeignKeyDefinition } from '../../../shared/types';
+import sql from 'mssql'
+import { DatabaseAdapter } from '../db-adapter'
+import { TableDefinition, ColumnDefinition, ForeignKeyDefinition } from '../../../shared/types'
 
 export class MssqlAdapter extends DatabaseAdapter {
-  private pool: sql.ConnectionPool | null = null;
+  private pool: sql.ConnectionPool | null = null
 
   async connect(): Promise<void> {
     const config: sql.config = {
@@ -16,49 +16,49 @@ export class MssqlAdapter extends DatabaseAdapter {
         encrypt: false, // Usualmente necesario para desarrollo local
         trustServerCertificate: true // Importante para conexiones locales
       }
-    };
-    
-    this.pool = await sql.connect(config);
+    }
+
+    this.pool = await sql.connect(config)
   }
 
   async disconnect(): Promise<void> {
     if (this.pool) {
-      await this.pool.close();
-      this.pool = null;
+      await this.pool.close()
+      this.pool = null
     }
   }
 
   async getSchema(): Promise<TableDefinition[]> {
-    if (!this.pool) throw new Error('MSSQL not connected');
+    if (!this.pool) throw new Error('MSSQL not connected')
 
     const result = await this.pool.request().query(`
       SELECT TABLE_NAME, TABLE_SCHEMA
       FROM INFORMATION_SCHEMA.TABLES 
       WHERE TABLE_TYPE = 'BASE TABLE'
-    `);
+    `)
 
-    const tables: TableDefinition[] = [];
+    const tables: TableDefinition[] = []
 
     for (const row of result.recordset) {
-      const tableName = row.TABLE_NAME;
-      const schemaName = row.TABLE_SCHEMA;
-      
-      const columns = await this.getColumns(tableName, schemaName);
-      const foreignKeys = await this.getForeignKeys(tableName, schemaName);
+      const tableName = row.TABLE_NAME
+      const schemaName = row.TABLE_SCHEMA
+
+      const columns = await this.getColumns(tableName, schemaName)
+      const foreignKeys = await this.getForeignKeys(tableName, schemaName)
 
       tables.push({
         name: tableName,
         schema: schemaName,
         columns,
         foreignKeys
-      });
+      })
     }
 
-    return tables;
+    return tables
   }
 
   private async getColumns(tableName: string, schemaName: string): Promise<ColumnDefinition[]> {
-    if (!this.pool) return [];
+    if (!this.pool) return []
 
     // Query para obtener columnas y saber si es PK en un solo viaje
     const query = `
@@ -76,24 +76,28 @@ export class MssqlAdapter extends DatabaseAdapter {
         WHERE tc.CONSTRAINT_TYPE = 'PRIMARY KEY'
       ) pk ON c.TABLE_SCHEMA = pk.TABLE_SCHEMA AND c.TABLE_NAME = pk.TABLE_NAME AND c.COLUMN_NAME = pk.COLUMN_NAME
       WHERE c.TABLE_NAME = @tableName AND c.TABLE_SCHEMA = @schemaName
-    `;
+    `
 
-    const result = await this.pool.request()
+    const result = await this.pool
+      .request()
       .input('tableName', sql.VarChar, tableName)
       .input('schemaName', sql.VarChar, schemaName)
-      .query(query);
+      .query(query)
 
-    return result.recordset.map(row => ({
+    return result.recordset.map((row) => ({
       name: row.COLUMN_NAME,
       type: row.DATA_TYPE,
       isNullable: row.IS_NULLABLE === 'YES',
       isPrimaryKey: !!row.IS_PRIMARY,
       defaultValue: row.COLUMN_DEFAULT
-    }));
+    }))
   }
 
-  private async getForeignKeys(tableName: string, schemaName: string): Promise<ForeignKeyDefinition[]> {
-    if (!this.pool) return [];
+  private async getForeignKeys(
+    tableName: string,
+    schemaName: string
+  ): Promise<ForeignKeyDefinition[]> {
+    if (!this.pool) return []
 
     const query = `
       SELECT 
@@ -108,18 +112,19 @@ export class MssqlAdapter extends DatabaseAdapter {
       INNER JOIN sys.tables t2 ON fkc.referenced_object_id = t2.object_id
       INNER JOIN sys.columns c2 ON fkc.referenced_object_id = c2.object_id AND fkc.referenced_column_id = c2.column_id
       WHERE t1.name = @tableName AND SCHEMA_NAME(t1.schema_id) = @schemaName
-    `;
+    `
 
-    const result = await this.pool.request()
+    const result = await this.pool
+      .request()
       .input('tableName', sql.VarChar, tableName)
       .input('schemaName', sql.VarChar, schemaName)
-      .query(query);
+      .query(query)
 
-    return result.recordset.map(row => ({
+    return result.recordset.map((row) => ({
       constraintName: row.constraint_name,
       sourceColumn: row.source_column,
       targetTable: row.target_table,
       targetColumn: row.target_column
-    }));
+    }))
   }
 }
