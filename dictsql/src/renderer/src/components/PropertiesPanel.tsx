@@ -1,4 +1,4 @@
-import { TableDefinition } from '../../../shared/types'
+import { TableDefinition } from '../../../shared/dto'
 
 interface PropertiesPanelProps {
   table: TableDefinition | null

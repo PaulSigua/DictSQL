@@ -1,4 +1,4 @@
-import { DbConnectionConfig, DatabaseSchema, TableDefinition } from '../../shared/types'
+import { DbConnectionConfig, DatabaseSchema, TableDefinition } from '../../shared/dto'
 
 export interface IElectronAPI {
   loadPreferences: () => Promise<void>

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { MarkdownGenerator } from './markdown-generator'
-import { TableDefinition } from '../../shared/types'
+import { TableDefinition } from '../../shared/dto/database.dto'
 
 describe('MarkdownGenerator', () => {
   it('debería generar un markdown correcto con una tabla simple', () => {

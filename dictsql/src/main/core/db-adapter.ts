@@ -1,5 +1,5 @@
 // fichero para soporte
-import { DbConnectionConfig, TableDefinition } from '../../shared/types.ts'
+import { DbConnectionConfig, TableDefinition } from '../../shared/dto.ts'
 
 /**
  * Clase abstracta que todo adaptador de base de datos debe implementar

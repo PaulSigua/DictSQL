@@ -1,5 +1,5 @@
 import { Handle, Position, NodeProps } from '@xyflow/react'
-import { TableDefinition } from '../../../../shared/types'
+import { TableDefinition } from '../../../../shared/dto'
 
 // Definimos qué datos recibe este nodo
 type TableNodeData = {

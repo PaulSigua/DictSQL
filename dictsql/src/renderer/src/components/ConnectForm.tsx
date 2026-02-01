@@ -9,32 +9,33 @@ import {
   Loader2,
   LucideIcon
 } from 'lucide-react' // Iconos nuevos
-import { DbConnectionConfig, TableDefinition } from '../../../shared/types'
+import { DbConnectionConfig, TableDefinition } from '../shared/dto/database.dto'
 import { Logo } from './Logo/Logo'
+import { useToast } from '../hooks/useToast'
+import { ChangeEvent, FormEvent } from 'react'
 
 interface ConnectFormProps {
   onSuccess?: (tables: TableDefinition[]) => void
 }
 
 export function ConnectForm({ onSuccess }: ConnectFormProps): JSX.Element {
+  const toast = useToast()
   const [formData, setFormData] = useState<DbConnectionConfig>({
     type: 'postgres',
     host: 'localhost',
     port: 5432,
     user: 'postgres',
     password: '',
-    database: 'postgres'
+    database: 'flights'
   })
 
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.name === 'port' ? parseInt(e.target.value) : e.target.value
     })
-    setError(null) // Limpiar error al escribir
   }
 
   const handleTypeChange = (type: string): void => {
@@ -42,7 +43,6 @@ export function ConnectForm({ onSuccess }: ConnectFormProps): JSX.Element {
     if (type === 'mysql') defaultPort = 3306
     if (type === 'mssql') defaultPort = 1433
     setFormData({ ...formData, type, port: defaultPort })
-    setError(null)
   }
 
   const handleFileSelect = async (): Promise<void> => {
@@ -50,31 +50,46 @@ export function ConnectForm({ onSuccess }: ConnectFormProps): JSX.Element {
     if (path) setFormData({ ...formData, database: path })
   }
 
-  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
+  const handleSubmit = async (e: FormEvent): Promise<void> => {
     e.preventDefault()
-    if (formData.type === 'sqlite' && !formData.database) {
-      setError('Selecciona un archivo .db primero')
-      return
+    if (formData.type === 'sqlite') {
+      if (!formData.database || formData.database.trim() === '') {
+        toast.error('Selecciona un archivo .db primero')
+        return
+      }
+    } else {
+      if (
+        !formData.host ||
+        formData.host.trim() === '' ||
+        !formData.port ||
+        formData.port === 0 ||
+        !formData.user ||
+        formData.user.trim() === '' ||
+        !formData.password ||
+        formData.password.trim() === '' ||
+        !formData.database ||
+        formData.database.trim() === ''
+      ) {
+        toast.error('Complete todos los campos')
+        return
+      }
     }
 
     setIsLoading(true)
-    setError(null)
 
     try {
       const response = await window.api.connectDb(formData)
       if (response.success && response.data) {
         if (onSuccess) onSuccess(response.data)
       } else {
-        setError(response.error || 'Error desconocido')
+        toast.error(response.error || 'Error desconocido')
       }
     } catch (error: unknown) {
-      setError(error as string)
+      toast.error(error as string)
     } finally {
       setIsLoading(false)
     }
   }
-
-  // --- COMPONENTES VISUALES INTERNOS ---
 
   const TypeCard = ({
     id,
@@ -121,7 +136,7 @@ export function ConnectForm({ onSuccess }: ConnectFormProps): JSX.Element {
       <input
         type={type}
         name={name}
-        value={(formData as FormData)[name]}
+        value={(formData as DbConnectionConfig)[name]}
         onChange={handleChange}
         placeholder={placeholder}
         className="bg-surface border border-border rounded px-3 py-2 text-sm text-textMain focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder-gray-600"
@@ -131,9 +146,7 @@ export function ConnectForm({ onSuccess }: ConnectFormProps): JSX.Element {
 
   return (
     <div className="w-full max-w-md mx-auto animate-fade-in">
-      {/* TARJETA PRINCIPAL */}
       <div className="bg-[#111] border border-border rounded-xl shadow-2xl overflow-hidden relative">
-        {/* Header Decorativo */}
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
 
         <div className="p-8 w-fit h-fit">
@@ -148,7 +161,6 @@ export function ConnectForm({ onSuccess }: ConnectFormProps): JSX.Element {
           </div>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-            {/* SELECTOR DE TIPO (GRID) */}
             <div className="grid grid-cols-4 gap-3">
               <TypeCard id="postgres" label="Postgres" icon={Database} />
               <TypeCard id="mysql" label="MySQL" icon={Server} />
@@ -156,7 +168,6 @@ export function ConnectForm({ onSuccess }: ConnectFormProps): JSX.Element {
               <TypeCard id="sqlite" label="SQLite" icon={FileCode} />
             </div>
 
-            {/* CAMPOS DEL FORMULARIO */}
             <div className="space-y-4 animate-slide-up">
               {formData.type === 'sqlite' ? (
                 <div className="bg-surfaceHighlight/50 p-4 rounded-lg border border-border border-dashed text-center">
@@ -204,14 +215,6 @@ export function ConnectForm({ onSuccess }: ConnectFormProps): JSX.Element {
               )}
             </div>
 
-            {/* MENSAJES DE ERROR */}
-            {error && (
-              <div className="bg-red-500/10 border border-red-500/50 text-red-400 text-xs p-3 rounded flex items-center gap-2">
-                <span>⚠️</span> {error}
-              </div>
-            )}
-
-            {/* BOTÓN DE ACCIÓN */}
             <button
               type="submit"
               disabled={isLoading}

@@ -9,7 +9,7 @@ import {
   Edge
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css' // estilos base
-import { TableDefinition } from '../../../shared/types'
+import { TableDefinition } from '../../../shared/dto'
 import { TableNode } from './TableNode' // nodo personalizado
 import { getLayoutedElements } from '../../utils/layout'
 
