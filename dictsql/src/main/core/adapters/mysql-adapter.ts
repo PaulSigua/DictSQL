@@ -1,6 +1,6 @@
 import mysql from 'mysql2/promise'
 import { DatabaseAdapter } from '../db-adapter'
-import { TableDefinition, ColumnDefinition, ForeignKeyDefinition } from '../../../shared/types'
+import { TableDefinition, ColumnDefinition, ForeignKeyDefinition } from '../../../shared/dto'
 
 export class MysqlAdapter extends DatabaseAdapter {
   private connection: mysql.Connection | null = null

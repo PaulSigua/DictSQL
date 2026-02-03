@@ -1,6 +1,6 @@
 import sql from 'mssql'
 import { DatabaseAdapter } from '../db-adapter'
-import { TableDefinition, ColumnDefinition, ForeignKeyDefinition } from '../../../shared/types'
+import { TableDefinition, ColumnDefinition, ForeignKeyDefinition } from '../../../shared/dto'
 
 export class MssqlAdapter extends DatabaseAdapter {
   private pool: sql.ConnectionPool | null = null

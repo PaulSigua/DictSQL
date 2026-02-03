@@ -1,4 +1,4 @@
-import { TableDefinition } from '../../shared/types'
+import { TableDefinition } from '../../shared/dto'
 
 export class HtmlGenerator {
   static generate(tables: TableDefinition[]): string {

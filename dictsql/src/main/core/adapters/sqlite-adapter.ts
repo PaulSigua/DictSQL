@@ -1,6 +1,6 @@
 import Database from 'better-sqlite3'
 import { DatabaseAdapter } from '../db-adapter'
-import { TableDefinition, ColumnDefinition, ForeignKeyDefinition } from '../../../shared/types'
+import { TableDefinition, ColumnDefinition, ForeignKeyDefinition } from '../../../shared/dto'
 import { Validators } from '../validators'
 import { ErrorDto } from '../../../shared/dto/error.dto'
 

@@ -1,4 +1,5 @@
-import { DbConnectionConfig, DatabaseSchema, TableDefinition } from '../../shared/types'
+import { DbConnectionConfig, DatabaseSchema, TableDefinition } from '../../shared/dto'
+import { ErrorDto } from '../../shared/dto/error.dto'
 
 export interface IElectronAPI {
   loadPreferences: () => Promise<void>
@@ -7,7 +8,7 @@ export interface IElectronAPI {
 export interface ICustomAPI {
   connectDb: (
     config: DbConnectionConfig
-  ) => Promise<{ success: boolean; data?: DatabaseSchema; error?: string }>
+  ) => Promise<{ success: boolean; data?: DatabaseSchema; error?: ErrorDto }>
   saveProject: (content: string) => Promise<{ success: boolean; filePath?: string; error?: string }>
   openProject: () => Promise<{
     success: boolean

@@ -1,39 +1,42 @@
-import { useState } from 'react'
+import { useState, JSX } from 'react'
 import { ConnectForm } from './components/ConnectForm'
 import { DiagramView } from './components/diagram/DiagramView'
 import { PropertiesPanel } from './components/PropertiesPanel'
-import { TopBar } from './layouts/TopBar' // <-- Importar
-import { TableDefinition } from '../../shared/types'
-
-function App(): React.JSX.Element {
+import { TopBar } from './layouts/TopBar'
+import { TableDefinition } from '@shared/dto/database.dto'
+import { Toaster } from 'react-hot-toast'
+import { useToast } from './hooks/useToast'
+function App(): JSX.Element {
+  const toast = useToast()
   const [tables, setTables] = useState<TableDefinition[]>([])
   const [selectedTableName, setSelectedTableName] = useState<string | null>(null)
   const [currentFilePath, setCurrentFilePath] = useState<string | undefined>(undefined)
 
-  // --- Lógica de Archivos ---
   const [searchTerm, setSearchTerm] = useState<string>('')
 
   const handleSave = async (): Promise<void> => {
-    if (tables.length === 0) return alert('No hay nada que guardar')
+    if (tables.length === 0) return toast.error('No hay nada que guardar')
 
-    // Convertimos el estado actual a string
     const content = JSON.stringify({ tables }, null, 2)
 
     const result = await window.api.saveProject(content)
     if (result.success && result.filePath) {
       setCurrentFilePath(result.filePath)
-      alert('Proyecto guardado correctamente')
+      toast.success('Proyecto guardado correctamente')
+    } else {
+      toast.error(`Error: ${result.error}`)
     }
   }
 
   const handleOpen = async (): Promise<void> => {
     const result = await window.api.openProject()
     if (result.success && result.data) {
-      // Cargamos los datos del archivo en el estado
-      // Aquí asumimos que el archivo tiene la estructura { tables: [...] }
       setTables(result.data.tables)
       setCurrentFilePath(result.filePath)
-      setSelectedTableName(null) // Limpiamos selección
+      setSelectedTableName(null)
+      toast.success('Proyecto abierto correctamente')
+    } else {
+      toast.error(`Error: ${result.error}`)
     }
   }
 
@@ -45,7 +48,6 @@ function App(): React.JSX.Element {
     }
   }
 
-  // ... (funciones handleNodeClick, updates existentes sin cambios)
   const handleConnectSuccess = (data: TableDefinition[]): void => setTables(data)
   const handleNodeClick = (_e: unknown, node: unknown): void => setSelectedTableName(node.id)
 
@@ -66,29 +68,28 @@ function App(): React.JSX.Element {
   const selectedTable = tables.find((t) => t.name === selectedTableName) || null
 
   const handleExportMarkdown = async (): Promise<void> => {
-    if (tables.length === 0) return alert('Sin datos')
+    if (tables.length === 0) return toast.error('Sin datos')
     const result = await window.api.exportMarkdown(tables)
-    if (result.success) alert(`Guardado en: ${result.filePath}`)
-    else if (result.error) alert(`Error: ${result.error}`)
+    if (result.success) toast.success(`Markdown guardado en: ${result.filePath}`)
+    else if (result.error) toast.error(`Error: ${result.error}`)
   }
 
   const handleExportHtml = async (): Promise<void> => {
-    if (tables.length === 0) return alert('Sin datos')
+    if (tables.length === 0) return toast.error('Sin datos')
     const result = await window.api.exportHtml(tables)
-    if (result.success) alert(`Guardado en: ${result.filePath}`)
-    else if (result.error) alert(`Error: ${result.error}`)
+    if (result.success) toast.success(`HTML guardado en: ${result.filePath}`)
+    else if (result.error) toast.error(`Error: ${result.error}`)
   }
 
   const handleExportPdf = async (): Promise<void> => {
-    if (tables.length === 0) return alert('Sin datos')
-    // Aviso de "Cargando" porque el PDF puede tardar 1 o 2 segundos
-    const toastId = setTimeout(() => alert('Generando PDF... por favor espera'), 500) // Simple feedback
+    if (tables.length === 0) return toast.error('Sin datos')
+    const toastId = setTimeout(() => toast.info('Generando PDF... por favor espera'), 500)
 
     const result = await window.api.exportPdf(tables)
-    clearTimeout(toastId) // Limpiamos si fue muy rápido
+    clearTimeout(toastId)
 
-    if (result.success) alert(`PDF generado en: ${result.filePath}`)
-    else if (result.error) alert(`Error: ${result.error}`)
+    if (result.success) toast.success(`PDF guardado en: ${result.filePath}`)
+    else if (result.error) toast.error(`Error: ${result.error}`)
   }
 
   const filteredTables = tables.filter((table) =>
@@ -96,7 +97,6 @@ function App(): React.JSX.Element {
   )
 
   return (
-    // CAMBIO: Usamos clases Tailwind en lugar de style={{...}}
     <div className="flex flex-col h-screen w-screen bg-background text-gray-100 font-sans">
       <TopBar
         onSave={handleSave}
@@ -109,15 +109,10 @@ function App(): React.JSX.Element {
         projectName={currentFilePath}
       />
 
-      {/* AREA DE TRABAJO */}
       <div className="flex-1 flex overflow-hidden relative">
-        {/* IZQUIERDA: Diagrama o Formulario */}
         <div className="flex-1 relative bg-dots-pattern">
-          {' '}
-          {/* bg-dots-pattern es opcional, lo podemos agregar luego */}
           {tables.length === 0 ? (
             <div className="h-full flex items-center justify-center p-10">
-              {/* Centramos el formulario perfectamente */}
               <ConnectForm onSuccess={handleConnectSuccess} />
             </div>
           ) : (
@@ -125,7 +120,6 @@ function App(): React.JSX.Element {
           )}
         </div>
 
-        {/* DERECHA: Panel de Propiedades */}
         {selectedTable && (
           <PropertiesPanel
             table={selectedTable}
@@ -135,6 +129,7 @@ function App(): React.JSX.Element {
           />
         )}
       </div>
+      <Toaster />
     </div>
   )
 }

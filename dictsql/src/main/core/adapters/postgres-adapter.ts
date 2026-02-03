@@ -1,6 +1,6 @@
 import { Client } from 'pg'
 import { DatabaseAdapter } from '../db-adapter'
-import { TableDefinition, ColumnDefinition, ForeignKeyDefinition } from '../../../shared/types'
+import { TableDefinition, ColumnDefinition, ForeignKeyDefinition } from '../../../shared/dto'
 
 export class PostgresAdapter extends DatabaseAdapter {
   private client: Client | null = null
