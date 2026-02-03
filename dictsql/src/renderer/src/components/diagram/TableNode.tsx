@@ -1,65 +1,62 @@
 import { Handle, Position, NodeProps } from '@xyflow/react'
-import { TableDefinition } from '../../../../shared/dto'
+import { TableDefinition } from '../../../../shared/dto/database.dto'
+import { Table2, Key } from 'lucide-react'
+import { memo } from 'react'
 
 // Definimos qué datos recibe este nodo
-type TableNodeData = {
+interface TableNodeData {
   tableData: TableDefinition
 }
 
-export function TableNode({ data }: NodeProps<TableNodeData>): JSX.Element {
+export const TableNode = memo(({ data }: NodeProps<TableNodeData>) => {
   const { tableData } = data
 
   return (
-    <div
-      className="table-node"
-      style={{
-        border: '1px solid #777',
-        borderRadius: '5px',
-        background: '#1e1e1e', // Fondo oscuro
-        color: '#fff',
-        minWidth: '200px',
-        fontSize: '12px',
-        fontFamily: 'monospace'
-      }}
-    >
+    <div className="table-node min-w-[220px] rounded-lg shadow-lg border-2 border-border bg-surface overflow-hidden transition-all hover:shadow-xl hover:border-primary/50">
       {/* Header de la Tabla */}
-      <div
-        style={{
-          padding: '8px',
-          background: '#333',
-          borderBottom: '1px solid #777',
-          fontWeight: 'bold',
-          textAlign: 'center'
-        }}
-      >
-        {tableData.name}
+      <div className="px-3 py-2 bg-primary/10 border-b-2 border-primary/30 flex items-center gap-2">
+        <Table2 size={16} className="text-primary" />
+        <span className="font-bold text-sm text-textPrimary font-mono">{tableData.name}</span>
       </div>
 
       {/* Lista de Columnas */}
-      <div style={{ padding: '8px' }}>
+      <div className="p-2 space-y-1 max-h-[300px] overflow-y-auto">
         {tableData.columns.map((col) => (
           <div
             key={col.name}
-            style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}
+            className="flex items-center justify-between px-2 py-1 rounded hover:bg-surfaceHighlight transition-colors text-xs"
           >
-            <span
-              style={{
-                fontWeight: col.isPrimaryKey ? 'bold' : 'normal',
-                color: col.isPrimaryKey ? '#ffcc00' : '#eee'
-              }}
-            >
-              {col.name} {col.isPrimaryKey && '🔑'}
+            <div className="flex items-center gap-1.5 flex-1 min-w-0">
+              {col.isPrimaryKey && <Key size={12} className="text-warning flex-shrink-0" />}
+              <span
+                className={`font-mono truncate ${
+                  col.isPrimaryKey ? 'font-bold text-primary' : 'text-textPrimary'
+                }`}
+                title={col.name}
+              >
+                {col.name}
+              </span>
+            </div>
+            <span className="text-textMuted font-mono text-[10px] ml-2 flex-shrink-0">
+              {col.type}
             </span>
-            <span style={{ color: '#aaa' }}>{col.type}</span>
           </div>
         ))}
       </div>
 
       {/* Puntos de conexión (Handles) */}
-      {/* Target: Donde entran las líneas */}
-      <Handle type="target" position={Position.Left} style={{ background: '#555' }} />
-      {/* Source: De donde salen las líneas */}
-      <Handle type="source" position={Position.Right} style={{ background: '#555' }} />
+      <Handle
+        type="target"
+        position={Position.Left}
+        className="w-3 h-3 border-2 border-primary bg-surface"
+      />
+      <Handle
+        type="source"
+        position={Position.Right}
+        className="w-3 h-3 border-2 border-primary bg-surface"
+      />
     </div>
   )
-}
+})
+
+TableNode.displayName = 'TableNode'

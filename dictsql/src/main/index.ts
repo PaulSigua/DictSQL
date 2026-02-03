@@ -6,43 +6,29 @@ import { DbConnectionConfig, TableDefinition } from '../shared/dto/database.dto'
 import { DatabaseService } from './services/database.service'
 import { FileService } from './services/file.service'
 
-// --- IPC Handlers para Base de Datos ---
 ipcMain.handle('db:connect', async (_event, config: DbConnectionConfig) => {
   return await DatabaseService.getSchema(config)
 })
 
-// IPC para seleccionar archivo DB (SQLite)
 ipcMain.handle('dialog:openFile', async () => {
   return await FileService.selectDatabaseFile()
 })
 
-// --- IPC Handlers para Archivos ---
-
-// Guardar Proyecto
 ipcMain.handle('file:save', async (_event, content: string) => {
   return await FileService.saveProject(content)
 })
 
-// Abrir Proyecto
 ipcMain.handle('file:open', async () => {
   return await FileService.openProject()
 })
 
-// Exportar a Markdown
 ipcMain.handle('file:export-markdown', async (_event, tables: TableDefinition[]) => {
   return await FileService.exportMarkdown(tables)
 })
 
-// ---------------------------------------------------------
-// 4. HANDLERS: EXPORTAR HTML Y PDF
-// ---------------------------------------------------------
-
-// Exportar HTML
 ipcMain.handle('file:export-html', async (_event, tables: TableDefinition[]) => {
   return await FileService.exportHtml(tables)
 })
-
-// Exportar PDF (Truco: Renderizar HTML en ventana oculta)
 ipcMain.handle('file:export-pdf', async (_event, tables: TableDefinition[]) => {
   return await FileService.exportPdf(tables)
 })
@@ -50,14 +36,17 @@ ipcMain.handle('file:export-pdf', async (_event, tables: TableDefinition[]) => {
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: 1400,
+    height: 1000,
+    minWidth: 1200,
+    minHeight: 1000,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      sandbox: false,
+      contextIsolation: true
     }
   })
 

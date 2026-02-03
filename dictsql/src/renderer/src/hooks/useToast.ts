@@ -4,6 +4,7 @@ type UseToastType = {
   success: (message: string) => void
   error: (message: string) => void
   info: (message: string) => void
+  loading: (message: string) => string
   dismiss: (toastId: string) => void
 }
 
@@ -58,11 +59,23 @@ export const useToast = (): UseToastType => {
     })
   }
 
+  const loading = (message: string): string => {
+    return toast.loading(message, {
+      position: 'bottom-right',
+      style: {
+        background: '#6b7280',
+        color: '#fff',
+        padding: '16px',
+        borderRadius: '8px'
+      }
+    })
+  }
+
   const dismiss = (toastId: string): void => {
     toast.dismiss(toastId)
   }
 
-  return { success, error, info, dismiss }
+  return { success, error, info, loading, dismiss }
 }
 
 export { Toaster }

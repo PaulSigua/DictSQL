@@ -1,5 +1,7 @@
 import { Logo } from '../components/Logo/Logo'
 import { Search } from 'lucide-react'
+import { ThemeToggle } from '../components/ThemeToggle'
+import { JSX } from 'react'
 
 interface TopBarProps {
   onSave: () => void
@@ -22,12 +24,6 @@ export function TopBar({
   onSearch,
   projectName
 }: TopBarProps): JSX.Element {
-  const btnBase =
-    'bg-red px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-2'
-  const btnSecondary = `${btnBase} bg-surface hover:bg-slate-700 text-gray-300 border border-border hover:border-slate-500`
-  const btnIcon =
-    'p-1.5 rounded-md text-gray-400 hover:text-white hover:bg-slate-700 transition-colors'
-
   return (
     <div className="h-14 bg-background/95 backdrop-blur border-b border-border flex items-center px-4 gap-4 select-none shadow-sm">
       <div className="flex items-center gap-2 text-primary font-bold text-lg tracking-tight mr-2">
@@ -49,13 +45,13 @@ export function TopBar({
       <div className="flex-1"></div>
 
       <div className="flex items-center gap-2">
-        <button className={btnSecondary} onClick={onNew}>
+        <button className="btn-secondary" onClick={onNew}>
           Nuevo
         </button>
-        <button className={btnSecondary} onClick={onOpen}>
+        <button className="btn-secondary" onClick={onOpen}>
           Abrir
         </button>
-        <button className={btnSecondary} onClick={onSave}>
+        <button className="btn-secondary" onClick={onSave}>
           Guardar
         </button>
       </div>
@@ -66,13 +62,13 @@ export function TopBar({
         <span className="text-xs text-gray-500 px-2 font-semibold uppercase tracking-wider">
           Exportar
         </span>
-        <button className={btnIcon} onClick={onExportMarkdown} title="Exportar a Markdown">
+        <button className="btn-icon" onClick={onExportMarkdown} title="Exportar a Markdown">
           MD
         </button>
-        <button className={btnIcon} onClick={onExportHtml} title="Exportar a HTML">
+        <button className="btn-icon" onClick={onExportHtml} title="Exportar a HTML">
           WEB
         </button>
-        <button className={btnIcon} onClick={onExportPdf} title="Exportar a PDF">
+        <button className="btn-icon" onClick={onExportPdf} title="Exportar a PDF">
           PDF
         </button>
       </div>
@@ -88,6 +84,7 @@ export function TopBar({
           </span>
         </div>
       )}
+      <ThemeToggle />
     </div>
   )
 }

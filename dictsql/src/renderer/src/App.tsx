@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, JSX } from 'react'
 import { ConnectForm } from './components/ConnectForm'
 import { DiagramView } from './components/diagram/DiagramView'
 import { PropertiesPanel } from './components/PropertiesPanel'
@@ -6,7 +6,7 @@ import { TopBar } from './layouts/TopBar'
 import { TableDefinition } from '@shared/dto/database.dto'
 import { Toaster } from 'react-hot-toast'
 import { useToast } from './hooks/useToast'
-function App(): React.JSX.Element {
+function App(): JSX.Element {
   const toast = useToast()
   const [tables, setTables] = useState<TableDefinition[]>([])
   const [selectedTableName, setSelectedTableName] = useState<string | null>(null)
